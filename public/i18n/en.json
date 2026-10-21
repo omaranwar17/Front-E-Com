@@ -1,0 +1,12 @@
+
+{
+  "NAV": {
+    "HOME": "Home",
+    "SHOPPING": "Shopping",
+    "ABOUT": "About Us",
+    "BEST_SELLER": "Best Seller",
+    "SEARCH": "Search",
+    "CART": "Cart",
+    "ACCOUNT": "Account"
+  }
+}
