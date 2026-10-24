@@ -12,8 +12,6 @@ export const productRoutes: Routes = [
     path: 'addProduct',
     component: AddProduct,
   },
-  {
-    path: 'edit/:id', // مسار التعديل
-    component: AddProduct, // نفس الكومبوننت
-  }
+{ path: 'edit/:id', component: AddProduct },
+
 ];
