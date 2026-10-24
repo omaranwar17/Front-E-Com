@@ -30,5 +30,31 @@
     
     "ADD_TO_CART": "Add to Cart",
     "WATCH": "Watch"
-  }
+  },
+  "Admin": {
+  "ADD_PRODUCT": "Add Product",
+  "BACK": "Back",
+  "NAME": "Product name",
+  "DESCRIPTION": "Description",
+  "NEW_PRICE": "Current price",
+  "OLD_PRICE": "Old price (optional)",
+  "CATEGORY": "Category",
+  "SELECT_CATEGORY": "Select a category",
+  "PHOTOS": "Photos",
+  "UPLOAD_HINT": "Click to choose photos",
+  "MAIN": "Main",
+  "REMOVE": "Remove",
+  "SAVE": "Save product",
+  "SAVING": "Saving...",
+  "SUCCESS": "Product added successfully",
+  "VIEW_PRODUCTS": "View products",
+  "ERROR": "Something went wrong, please try again",
+  "REQUIRED": "This field is required",
+  "PRICE_INVALID": "Enter a price greater than zero",
+  "OLD_PRICE_INVALID": "Old price must be greater than or equal to the current price",
+  "PHOTO_REQUIRED": "Add at least one photo",
+  "PHOTO_TYPE": "Allowed formats: JPG, PNG, WEBP",
+  "PHOTO_SIZE": "Image must be under 2MB",
+  "PHOTO_MAX": "Maximum 6 photos"
+}
 }

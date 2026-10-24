@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { NotFound } from './shared/components/not-found/not-found';
+import { AddProduct } from './features/Product/Component/add-product/add-product';
+
 
 export const routes: Routes = [
  {
@@ -12,11 +14,8 @@ export const routes: Routes = [
     redirectTo: 'products',
     pathMatch: 'full'
   },
-  
-  
-  // مسار لو الصفحة مش موجودة (404)
   {
     path: '**',
-    component:NotFound
+    component: NotFound
   }
 ];
