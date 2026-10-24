@@ -1,0 +1,81 @@
+<!-- ضفنا w-full هنا -->
+<div class="w-full flex-1">
+  
+  <div class="mb-4 text-sm text-gray-500 font-medium">
+   <span>
+  {{ 'Product.SHOWING' | translate }} {{ products.length }} {{ 'Product.PRODUCTS' | translate }}
+</span>
+  </div>
+
+  <!-- خلينا الـ grid ياخد w-full ومسافات مظبوطة -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full"> 
+    
+    @for (product of products; track product.id) {
+      
+      <!-- الكارت -->
+      <div class="group bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full cursor-pointer">
+        
+    <!-- ================= جزء الصور ================= -->
+<div class="w-full flex flex-col bg-white p-4">
+  
+ <div class="w-full h-56 flex items-center justify-center overflow-hidden mb-1">
+     <!-- شيلنا w-40 h-40 وحطينا w-full h-full -->
+     <img [src]="'https://localhost:7020/'+ product.photos[0].imageName" alt="Main Image" class="w-full h-full object-contain">
+</div>
+
+  <!-- 2. الصور الصغيرة (جاية من الـ API) -->
+<div class="flex justify-center gap-2 "> <!-- كبرت الـ gap شوية عشان المسافات تبان أحلى -->
+  @for (photo of product.photos; track photo.imageName) {
+    <!-- كبرنا الحجم من w-12 h-12 لـ w-20 h-20 -->
+    <div style="width: 100px; ; height: 100px;" class=" border border-gray-200 rounded-lg cursor-pointer overflow-hidden p-1 hover:border-blue-500 hover:shadow-md transition-all">
+      <img [src]="'https://localhost:7020/'+ photo.imageName" [alt]="product.name" class="w-full h-full object-cover rounded-md">
+    </div>
+  }
+</div>
+
+</div>
+
+        <!-- التفاصيل -->
+        <div class="p-4 flex flex-col flex-grow text-center border-t border-gray-100">
+          
+          <h3 class="text-gray-800 font-medium text-lg mb-1 truncate hover:underline">
+            {{ product.name }}
+          </h3>
+          
+          <p class="text-gray-600 text-xs mb-3 line-clamp-2">
+            {{ product.description }}
+          </p>
+          
+          <div class="mt-auto">
+        <div class="mt-auto w-full flex justify-center items-center gap-2">
+    <!-- السعر القديم: مشطوب ورمادي -->
+    <span
+      class="text-red-300 line-through text-sm"
+      *ngIf="product.oldPrice > 0">
+      {{ product.oldPrice | currency }}
+    </span>
+
+    <!-- السعر الجديد: عادي وواضح -->
+    <span class="text-gray-800 font-bold text-lg">
+      {{ product.newPrice | currency }}
+    </span>
+</div>
+            
+        
+            
+            <button class="w-full bg-indigo-600 text-white px-4 lg:px-6 py-2 font-medium hover:bg-indigo-700 transition-colors rounded  block">
+             {{ 'Product.ADD_TO_CART' | translate }}
+            </button>
+          </div>
+
+        </div>
+        
+      </div>
+    } @empty {
+      <div class="col-span-full text-center text-gray-500 py-10">لا توجد منتجات لعرضها حالياً.</div>
+    }
+
+  </div>
+
+
+</div>

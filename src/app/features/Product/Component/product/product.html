@@ -1,0 +1,19 @@
+<div class="max-w-7xl mx-auto p-6">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ 'Product.SORTING' | translate }}</h1>
+
+  <div class="flex flex-col md:flex-row gap-8 w-full">
+    
+    <!-- المنيو (الفلترة) -->
+    <app-categorys 
+      (categorySelected)="handleCategory($event)"
+      (sortChanged)="handleSort($event)"
+      (searchChanged)="handleSearch($event)">
+    </app-categorys>
+
+    <!-- عرض المنتجات -->
+    <div class="flex-1 w-full">
+      <app-product-list [products]="filteredProducts"></app-product-list>
+    </div>
+
+  </div>
+</div>

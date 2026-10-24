@@ -1,0 +1,57 @@
+<div class="w-full md:w-64 flex-shrink-0 space-y-6">
+  
+  <!-- Sorting -->
+  <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+       <h3 class="font-bold text-gray-800 mb-3 text-lg">{{ 'Product.SORTING' | translate }}</h3>
+    <select 
+      (change)="onSortChange($event)" 
+      class="w-full border border-gray-300 rounded-md p-2 text-sm text-gray-700 focus:outline-none focus:border-indigo-500"
+    >
+   <option value="name">{{ 'Product.NAME_AZ' | translate }}</option>
+<option value="price">{{ 'Product.PRICE_LOW_HIGH' | translate }}</option>
+<option value="price_desc">{{ 'Product.PRICE_HIGH_LOW' | translate }}</option>
+    </select>
+  </div>
+ <!-- Categories -->
+<div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+  <!-- العنوان مع خط جانبي -->
+  <div class="flex items-center gap-2 mb-4">
+    <span class="w-1 h-5 bg-indigo-600 rounded-full"></span>
+    <h3 class="font-bold text-gray-800 text-lg">{{ 'Product.CATEGORIES' | translate }}</h3>
+  </div>
+
+  <ul class="space-y-1 text-sm text-gray-600">
+    
+    <!-- زرار إرجاع كل المنتجات (All) -->
+    <li (click)="onCategorySelect('')" 
+        class="group flex items-center gap-3 cursor-pointer p-2.5 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200">
+      <span class="font-bold">{{ 'Product.ALL' | translate }}</span>
+    </li>
+
+    <!-- استخدام @for -->
+    @for (cat of categories; track cat.id) {
+      <li (click)="onCategorySelect(cat.name)" 
+          class="group flex items-center gap-3 cursor-pointer p-2.5 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200">
+        
+        <!-- اسم الفئة -->
+        <span class="font-medium">{{ cat.name }}</span>
+      </li>
+    } @empty {
+      <!-- لو لسه بيحمل أو مفيش داتا -->
+      <li class="text-gray-400 text-center py-2 text-sm">No categories found</li>
+    }
+
+</ul>
+</div>
+
+<!-- Search Input -->
+<div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-col gap-2">
+  <input 
+    type="text" 
+    [formControl]="searchControl" 
+    [placeholder]="'Product.SEARCH_PLACEHOLDER' | translate"  
+    class="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:border-indigo-500"
+  >
+</div>
+
+</div>
