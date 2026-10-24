@@ -1,4 +1,4 @@
-import { Component, DestroyRef, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
 import { LanguageService } from '../../../../core/services/language-service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProductService } from '../../Service/product-service';
@@ -14,44 +14,38 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
   templateUrl: './categorys.html',
 })
 export class Categorys implements OnInit {
-   @Output() sortChanged = new EventEmitter<string>();
-    searchTerm: string = '';
-     // بدل ما كانت string، بقت FormControl
-  searchControl = new FormControl(''); 
-    @Output() searchChanged = new EventEmitter<string>(); // بنبعت البحث للأب
+  @Output() sortChanged = new EventEmitter<string>();
+  @Output() searchChanged = new EventEmitter<string>();
+  @Output() categorySelected = new EventEmitter<number | null>();
 
-@Output() categorySelected = new EventEmitter<string>();
+  searchControl = new FormControl('');
+  categories = signal<any[]>([]);
+  selectedCategoryId = signal<number | null>(null);
 
- 
-   private destroyRef = inject(DestroyRef);
-  constructor(private _ProductService:ProductService ){}
-    categories: any[] = [];
-     langService = inject(LanguageService);
-     ngOnInit(): void {
-       this.getCategory()
-  // اللوجيك بتاع البحث بدون switchMap
-    this.searchControl.valueChanges.pipe(
-      debounceTime(400), // استنى 400 مللي ثانية
-      distinctUntilChanged(), // لو نفس الكلمة متبعتش تاني
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe((searchTerm) => {
-      this.searchChanged.emit(searchTerm || ''); 
+  private destroyRef = inject(DestroyRef);
+  langService = inject(LanguageService);
+
+  constructor(private _ProductService: ProductService) {}
+
+  ngOnInit(): void {
+    this.getCategory();
+
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((searchTerm) => {
+        this.searchChanged.emit(searchTerm?.trim() || '');
+      });
+  }
+
+  getCategory() {
+    this._ProductService.getCategory().subscribe({
+      next: (res: any) => this.categories.set(res),
+      error: (err) => console.error('Error fetching categories', err),
     });
-
-     }
-     getCategory()
-     {
-      this._ProductService.getCategory().subscribe({
-        next:((res:any)=>{
-            this.categories = res
-        })
-      })
-     }
-
-
-
-  onSearch() {
-    this.searchChanged.emit(this.searchTerm);
   }
 
   onSortChange(event: Event) {
@@ -59,7 +53,8 @@ export class Categorys implements OnInit {
     this.sortChanged.emit(selectElement.value);
   }
 
-onCategorySelect(categoryName: string) {
-  this.categorySelected.emit(categoryName);
-}
+  onCategorySelect(categoryId: number | null) {
+    this.selectedCategoryId.set(categoryId);
+    this.categorySelected.emit(categoryId);
+  }
 }

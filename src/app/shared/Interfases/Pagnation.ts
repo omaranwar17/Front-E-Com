@@ -1,10 +1,9 @@
 import { IProduct } from "./IProduct"
 
-export interface IPagnation {
-  pageNumber: number
-  pageSize: number
-  totalCount: number
-  totalPages: number
-  data: IProduct[]
+export interface IPagnation<T> {
+  pageNumber: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  data: T[];
 }
-
