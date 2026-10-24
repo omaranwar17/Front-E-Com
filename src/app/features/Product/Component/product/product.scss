@@ -1,0 +1,61 @@
+// دخول العنوان
+.page-title {
+  animation: title-in 0.5s ease-out both;
+}
+
+// دخول شريط الـ pagination
+.pager {
+  animation: pager-in 0.45s ease-out both;
+}
+
+// ظهور الأزرار ورا بعض
+.pager-btn {
+  animation: btn-in 0.35s ease-out both;
+
+  @for $i from 1 through 9 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 30}ms;
+    }
+  }
+}
+
+@keyframes title-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pager-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes btn-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-title,
+  .pager,
+  .pager-btn {
+    animation: none;
+  }
+}
