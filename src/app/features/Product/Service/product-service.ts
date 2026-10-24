@@ -33,11 +33,20 @@ export class ProductService {
   return this._http.get<IPagnation<IProduct>>(this.baseUrl + 'Product', { params });
 }
 
+addProduct(formData: FormData) {
+  // ماتحطش Content-Type بإيدك، المتصفح بيضيف الـ boundary لوحده
+  return this._http.post<{ statusCode?: number; message?: string }>(
+    this.baseUrl + 'Product',
+    formData
+  );
+}
 
 
 
 
-        getCategory()
+
+
+   getCategory()
     {
        return this._http.get(this.baseUrl+"Category");  
     }

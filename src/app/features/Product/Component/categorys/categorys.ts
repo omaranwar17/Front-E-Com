@@ -6,9 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [TranslatePipe , CommonModule , FormsModule , ReactiveFormsModule],
+  imports: [TranslatePipe, CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   selector: 'app-categorys',
   styleUrl: './categorys.scss',
   templateUrl: './categorys.html',
