@@ -7,6 +7,26 @@
     "BEST_SELLER": "الأكثر مبيعاً",
     "SEARCH": "بحث",
     "CART": "السلة",
-    "ACCOUNT": "حسابي"
+    "ACCOUNT": "حسابي",
+     "REGISTER": "تسجيل جديد",
+    "LOGIN": "تسجيل الدخول",
+    "MY_ORDER": "طلباتي"
+  },
+  "Product": {
+    "SORTING": "الترتيب",
+    "CATEGORIES": "الفئات",
+    "NAME_AZ": "الاسم (أ - ي)",
+    "PRICE_LOW_HIGH": "السعر: من الأقل للأعلى",
+        "SEARCH_PLACEHOLDER": "ابحث عن المنتجات...",
+    "PRICE_HIGH_LOW": "السعر: من الأعلى للأقل",
+    "LAPTOP": "لابتوب",
+    "MOBILE": "موبايل",
+      "SEARCH": "بحث",
+    "RESET": "إعادة تعيين",
+     "SHOWING": "عرض",
+    "PRODUCTS": "منتج",
+     "ALL": "All",
+      "ADD_TO_CART": "أضف إلى السلة",
+    "WATCH": "ساعة"
   }
 }

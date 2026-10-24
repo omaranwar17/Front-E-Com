@@ -7,6 +7,27 @@
     "BEST_SELLER": "Best Seller",
     "SEARCH": "Search",
     "CART": "Cart",
-    "ACCOUNT": "Account"
+    "ACCOUNT": "Account",
+    "REGISTER": "Register",
+    "LOGIN": "Login",
+    "MY_ORDER": "My Order"
+  },
+   "Product": {
+    "SORTING": "Sorting",
+    "CATEGORIES": "Categories",
+    "SEARCH_PLACEHOLDER": "Search products...",
+    "NAME_AZ": "Name (A-Z)",
+    "PRICE_LOW_HIGH": "Price: Low to High",
+    "PRICE_HIGH_LOW": "Price: High to Low",
+    "LAPTOP": "Laptop",
+    "MOBILE": "Mobile",
+    "SEARCH": "Search",
+    "RESET": "Reset",
+    "SHOWING": "Showing",
+    "PRODUCTS": "products",
+    "ALL": "All",
+    
+    "ADD_TO_CART": "Add to Cart",
+    "WATCH": "Watch"
   }
 }

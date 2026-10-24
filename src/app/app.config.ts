@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
         prefix: './i18n/',
         suffix: '.json'
       }),
-      fallbackLang: 'en' // استخدمنا fallbackLang بدل defaultLanguage
+      fallbackLang: 'en' 
     })
   ]
 };

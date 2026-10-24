@@ -2,9 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { LanguageService } from '../../../core/services/language-service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, RouterLink],
   selector: 'app-navbar',
   styleUrl: './navbar.scss',
   templateUrl: './navbar.html',
@@ -13,6 +14,7 @@ export class Navbar {
 
     isMobileMenuOpen = signal(false);
       isLangMenuOpen = signal(false); 
+       isAccountMenuOpen = signal(false); 
      langService = inject(LanguageService);
    // دالة بتعكس الحالة (لو مفتوح تقفله ولو مقفول تفتحه)
   toggleMobileMenu() {
@@ -23,4 +25,7 @@ export class Navbar {
     this.isLangMenuOpen.update(val => !val);
   }
   
+    toggleAccountMenu() {
+    this.isAccountMenuOpen.update(val => !val);
+  }
 }
