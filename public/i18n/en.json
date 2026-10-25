@@ -33,8 +33,19 @@
   },
   "Admin": {
   "ADD_PRODUCT": "Add Product",
+    "CATEGORY_NAME": "Category name",
+    "CATEGORY_NAME_PLACEHOLDER": "e.g. Electronics",
+    "CATEGORY_DESCRIPTION": "Description (optional)",
+    "CATEGORY_DESCRIPTION_PLACEHOLDER": "Short description...",
+  
+    "CATEGORY_ADDED": "Category added successfully ✅",
+    "NAME_REQUIRED": "Name is required",
+    "NAME_TOO_LONG": "Name is too long (max 100)",
+    "SOMETHING_WRONG": "Something went wrong, please try again",
   "BACK": "Back",
   "NAME": "Product name",
+  "ADD_CATEGORY": "Add Category",
+ "EDIT_CATEGORY": "Edit Category",
   "DESCRIPTION": "Description",
   "NEW_PRICE": "Current price",
   "OLD_PRICE": "Old price (optional)",
@@ -64,5 +75,13 @@
   "EDIT": "Edit",
   "DELETE": "Delete",
   "PHOTO_MAX": "Maximum 6 photos"
-}
+},
+"CATEGORY": {
+    "DELETE_TITLE": "Delete Category",
+    "DELETE_CONFIRM": "Are you sure you want to delete the category \"{{name}}\"? This action cannot be undone."
+  },
+ "COMMON": {
+    "CANCEL": "Cancel",
+    "DELETE": "Delete"
+  }
 }
