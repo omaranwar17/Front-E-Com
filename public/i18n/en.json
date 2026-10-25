@@ -27,7 +27,7 @@
     "SHOWING": "Showing",
     "PRODUCTS": "products",
     "ALL": "All",
-    
+      "EDIT": "Edit",
     "ADD_TO_CART": "Add to Cart",
     "WATCH": "Watch"
   },
@@ -54,6 +54,12 @@
   "OLD_PRICE_INVALID": "Old price must be greater than or equal to the current price",
   "PHOTO_REQUIRED": "Add at least one photo",
   "PHOTO_TYPE": "Allowed formats: JPG, PNG, WEBP",
+  "DELETE_TITLE": "Delete product?",
+"DELETE_MESSAGE": "This product and all its photos will be permanently deleted.",
+"CANCEL": "Cancel",
+"DELETING": "Deleting...",
+  "EDIT_PRODUCT": "Edit Product",
+"CURRENT_PHOTOS": "Current photos (upload new ones to replace them)",
   "PHOTO_SIZE": "Image must be under 2MB",
   "EDIT": "Edit",
   "DELETE": "Delete",

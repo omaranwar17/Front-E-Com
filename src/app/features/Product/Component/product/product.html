@@ -17,7 +17,7 @@
 
     <!-- عرض المنتجات -->
     <div class="flex-1 w-full">
-      <app-product-list [products]="products()" [total]="totalCount()"></app-product-list>
+      <app-product-list [products]="products()" (deleted)="onProductDeleted()" [total]="totalCount()"></app-product-list>
 
       <!-- Pagination -->
       @if (totalPages() > 1) {

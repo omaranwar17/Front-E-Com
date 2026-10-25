@@ -53,6 +53,12 @@ updateProduct(id: number, formData: FormData) {
   );
 }
 
+deleteProduct(id: number) {
+  return this._http.delete<{ statusCode?: number; message?: string }>(
+    `${this.baseUrl}Product/${id}`
+  );
+}
+
 
 
 

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../../../core/services/language-service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Route, Router, RouterLink } from '@angular/router';
+import { ProductService } from '../../Service/product-service';
 
 @Component({
   imports: [CommonModule, TranslatePipe, RouterLink],
@@ -15,6 +16,11 @@ export class ProductList {
  @Input() products: IProduct[] = [];
   @Input() total = 0;
   constructor(private _router:Router){}
+  @Output() deleted = new EventEmitter<void>();
+  productToDelete = signal<IProduct | null>(null);
+deleting = signal(false);
+deleteError = signal('');
+private _productService = inject(ProductService);
     readonly imageBase = 'https://localhost:7020/';
   langService = inject(LanguageService);
     private selectedPhotos = signal<Record<number, string>>({});
@@ -36,8 +42,43 @@ onEdit(product: IProduct): void {
  this._router.navigate(['/products/edit', product.id]);
 }
 
-onDelete(product: IProduct): void {
 
+
+onDelete(product: IProduct): void {
+  this.closeMenu();
+  this.deleteError.set('');
+  this.productToDelete.set(product);
+}
+
+cancelDelete(): void {
+  if (this.deleting()) return; // ماتقفلش وقت الحذف
+  this.productToDelete.set(null);
+}
+
+confirmDelete(): void {
+  const product = this.productToDelete();
+  if (!product || this.deleting()) return;
+
+  this.deleting.set(true);
+  this.deleteError.set('');
+
+  this._productService.deleteProduct(product.id).subscribe({
+    next: () => {
+      this.deleting.set(false);
+      this.productToDelete.set(null);
+      this.deleted.emit();
+    },
+    error: (err) => {
+      console.error('Delete failed', err);
+      this.deleting.set(false);
+      this.deleteError.set(err?.error?.message ?? '');
+    },
+  });
+}
+
+@HostListener('document:keydown.escape')
+onEscape(): void {
+  this.cancelDelete();
 }
 
 
