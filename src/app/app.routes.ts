@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { NotFound } from './shared/components/not-found/not-found';
 import { AddProduct } from './features/Product/Component/add-product/add-product';
+import { Home } from './features/home/home';
 
 
 export const routes: Routes = [
@@ -11,8 +12,12 @@ export const routes: Routes = [
 
   {
     path: '',
-    redirectTo: 'products',
+    redirectTo: 'Home',
     pathMatch: 'full'
+  },
+   {
+    path: 'Home',
+ component:Home
   },
   {
     path: '**',

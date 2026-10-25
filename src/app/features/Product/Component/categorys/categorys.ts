@@ -1,4 +1,4 @@
-import { Component, DestroyRef, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, HostListener, inject, OnInit, Output, signal } from '@angular/core';
 import { LanguageService } from '../../../../core/services/language-service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProductService } from '../../Service/product-service';
@@ -64,7 +64,37 @@ export class Categorys implements OnInit {
 deleting = signal(false);
 deleteError = signal<string | null>(null);
 
+
+
+openMenuId = signal<number | null>(null);
+
+toggleMenu(id: number, event: Event): void {
+  event.stopPropagation(); // عشان الـ document:click ما يقفلهاش فورًا
+  this.openMenuId.update((current) => (current === id ? null : id));
+}
+
+closeMenu(): void {
+  this.openMenuId.set(null);
+}
+
+// أي كليك برا الـ kebab يقفل القائمة
+@HostListener('document:click')
+onDocumentClick(): void {
+  this.closeMenu();
+}
+
+// Escape يقفل القائمة أولًا، ولو مفيش قائمة مفتوحة يقفل الـ dialog
+@HostListener('document:keydown.escape')
+onEscape(): void {
+  if (this.openMenuId() !== null) {
+    this.closeMenu();
+    return;
+  }
+  this.cancelDelete();
+}
+
 askDelete(category: any): void {
+  this.closeMenu();
   this.deleteError.set(null);
   this.categoryToDelete.set(category);
 }

@@ -85,6 +85,25 @@
   "COMMON": {
     "CANCEL": "إلغاء",
     "DELETE": "حذف"
-  }
+  },
+  "ProductDe": {
+  "YOU_SAVE": "...",
+  "ADD_TO_CART": "...",
+  "NOT_FOUND": "...",
+
+  "OFF": "خصم",
+  "QUANTITY": "الكمية",
+  "TOTAL": "الإجمالي",
+  "DECREASE": "تقليل الكمية",
+  "INCREASE": "زيادة الكمية",
+  "BUY_NOW": "اشترِ الآن",
+  "ADD_TO_WISHLIST": "أضف إلى المفضلة",
+  "REMOVE_FROM_WISHLIST": "إزالة من المفضلة",
+  "DETAILS": "تفاصيل المنتج",
+  "DELIVERY_TITLE": "توصيل سريع",
+  "DELIVERY_INFO": "التوصيل خلال 3 أيام من تاريخ الشراء.",
+  "SUPPORT_TITLE": "تحتاج مساعدة؟",
+  "SUPPORT_INFO": "عندك سؤال عن المنتج؟ تواصل مع فريقنا عبر الدردشة المباشرة أو البريد."
+}
 
 }

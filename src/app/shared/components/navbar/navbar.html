@@ -5,17 +5,60 @@
     
     <!-- الشمال: اللوجو -->
     <div class="flex items-center gap-6 lg:gap-8">
-      <a href="#" class="flex items-center gap-2 text-xl font-bold italic tracking-wider text-indigo-600 hover:text-indigo-800 transition-colors">
+      <a routerLink="/" href="#" class="flex items-center gap-2 text-xl font-bold italic tracking-wider text-indigo-600 hover:text-indigo-800 transition-colors">
         <img src="imge/E-COM.png" alt="Logo" style="width: 78PX;" class=" object-contain" />
         <!-- E-commerce -->
       </a>
 
       <!-- لينكات التنقل (تظهر من شاشة md وفوق) -->
       <ul class="hidden md:flex items-center gap-4 lg:gap-6 text-sm font-semibold">
-        <li><a routerLink="/products" class="hover:text-indigo-600 transition-colors duration-300">{{ 'NAV.HOME' | translate }}</a></li>
-        <li><a routerLink="/Shopping" class="hover:text-indigo-600 transition-colors duration-300">{{ 'NAV.SHOPPING' | translate }}</a></li>
-        <li><a routerLink="/About" class="hover:text-indigo-600 transition-colors duration-300">{{ 'NAV.ABOUT' | translate }}</a></li>
-        <li><a routerLink="/Best_Seller" class="hover:text-indigo-600 transition-colors duration-300">{{ 'NAV.BEST_SELLER' | translate }}</a></li>
+        <li>
+           <a           routerLink="/Home"
+             routerLinkActive="!bg-indigo-50 !text-indigo-600"
+             ariaCurrentWhenActive="page"
+             class="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-gray-700
+             transition-all duration-200 ease-out
+             hover:bg-gray-100 hover:text-gray-900
+             active:scale-95
+             focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40
+             motion-reduce:transition-none motion-reduce:active:scale-100">
+            {{ 'NAV.HOME' | translate }}
+         </a>
+          
+      </li>
+        <li>
+          <a routerLink="/products"   routerLinkActive="!bg-indigo-50 !text-indigo-600"
+             ariaCurrentWhenActive="page"
+             class="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-gray-700
+             transition-all duration-200 ease-out
+             hover:bg-gray-100 hover:text-gray-900
+             active:scale-95
+             focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40
+             motion-reduce:transition-none motion-reduce:active:scale-100">{{ 'NAV.SHOPPING' | translate }}
+            </a>
+          </li>
+        <li>
+          <a routerLink="/About"   routerLinkActive="!bg-indigo-50 !text-indigo-600"
+             ariaCurrentWhenActive="page"
+             class="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-gray-700
+             transition-all duration-200 ease-out
+             hover:bg-gray-100 hover:text-gray-900
+             active:scale-95
+             focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40
+             motion-reduce:transition-none motion-reduce:active:scale-100">{{ 'NAV.ABOUT' | translate }}
+            </a>
+          </li>
+        <li>
+          <a routerLink="/Best_Seller"   routerLinkActive="!bg-indigo-50 !text-indigo-600"
+             ariaCurrentWhenActive="page"
+             class="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-gray-700
+             transition-all duration-200 ease-out
+             hover:bg-gray-100 hover:text-gray-900
+             active:scale-95
+             focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40
+             motion-reduce:transition-none motion-reduce:active:scale-100">{{ 'NAV.BEST_SELLER' | translate }}
+            </a>
+          </li>
       </ul>
     </div>
 

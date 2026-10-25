@@ -83,5 +83,24 @@
  "COMMON": {
     "CANCEL": "Cancel",
     "DELETE": "Delete"
-  }
+  },
+  "ProductDe": {
+  "YOU_SAVE": "...",
+  "ADD_TO_CART": "...",
+  "NOT_FOUND": "...",
+
+  "OFF": "off",
+  "QUANTITY": "Quantity",
+  "TOTAL": "Total",
+  "DECREASE": "Decrease quantity",
+  "INCREASE": "Increase quantity",
+  "BUY_NOW": "Buy now",
+  "ADD_TO_WISHLIST": "Add to wishlist",
+  "REMOVE_FROM_WISHLIST": "Remove from wishlist",
+  "DETAILS": "Product details",
+  "DELIVERY_TITLE": "Fast delivery",
+  "DELIVERY_INFO": "Delivery within 3 days from the date of purchase.",
+  "SUPPORT_TITLE": "Need help?",
+  "SUPPORT_INFO": "Have a question about this product? Contact our team via live chat or email."
+}
 }
