@@ -1,17 +1,31 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 // استيراد الدوال الجديدة من ngx-translate
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { loaderInterceptor } from './shared/interceptor/loader-interceptor';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideToastr({
+      timeOut: 3000,
+      positionClass: 'toast-top-right', // مكان الإشعار
+      preventDuplicates: true,          // منع تكرار نفس الإشعار
+      progressBar: true,                // شريط التحميل أسفل الإشعار
+      closeButton: true                 // زر إغلاق
+    }),
+ 
     provideRouter(routes),
-    provideHttpClient(),
+
+    provideHttpClient(withInterceptors([loaderInterceptor])),
+  
+
 
     // الطريقة الصح للإصدار 18 مع Angular 22
     provideTranslateService({

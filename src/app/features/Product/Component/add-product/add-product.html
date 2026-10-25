@@ -173,19 +173,7 @@
       }
     </div>
 
-    <!-- النتيجة -->
-    @if (result() === 'success') {
-      <div class="msg-in flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-medium text-indigo-700" role="status">
-        <span>{{ 'Admin.SUCCESS' | translate }}</span>
-        <a routerLink="/products" class="underline underline-offset-2 hover:text-indigo-900">{{ 'Admin.VIEW_PRODUCTS' | translate }}</a>
-      </div>
-    }
-    @if (result() === 'error') {
-      <div class="msg-in rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">
-        {{ 'Admin.ERROR' | translate }}
-        @if (serverMessage()) { <span class="block mt-1 text-xs opacity-80">{{ serverMessage() }}</span> }
-      </div>
-    }
+ 
 
     <!-- زرار الحفظ -->
     <button type="submit" [disabled]="loading()"

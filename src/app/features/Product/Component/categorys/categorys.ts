@@ -1,6 +1,6 @@
 import { Component, DestroyRef, EventEmitter, HostListener, inject, OnInit, Output, signal } from '@angular/core';
 import { LanguageService } from '../../../../core/services/language-service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ProductService } from '../../Service/product-service';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -8,6 +8,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../Service/category-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   imports: [TranslatePipe, CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
@@ -19,6 +20,7 @@ export class Categorys implements OnInit {
   @Output() sortChanged = new EventEmitter<string>();
   @Output() searchChanged = new EventEmitter<string>();
   @Output() categorySelected = new EventEmitter<number | null>();
+   private translate = inject(TranslateService);
 
   searchControl = new FormControl('');
   categories = signal<any[]>([]);
@@ -28,7 +30,7 @@ export class Categorys implements OnInit {
   langService = inject(LanguageService);
 
   constructor(private _ProductService: ProductService , private categoryService:CategoryService) {}
-
+  private toastr = inject(ToastrService);
   ngOnInit(): void {
     this.getCategory();
 
@@ -104,20 +106,56 @@ cancelDelete(): void {
   this.categoryToDelete.set(null);
 }
 
-confirmDelete(): void {
-  const category = this.categoryToDelete();
-  if (!category || this.deleting()) return;
+// confirmDelete(): void {
+//   const category = this.categoryToDelete();
+//   if (!category || this.deleting()) return;
 
-  this.deleting.set(true);
-  this.categoryService
-    .deleteCategory(category.id)
-    .pipe(finalize(() => this.deleting.set(false)))
-    .subscribe({
-      next: () => {
-        this.categoryToDelete.set(null);
-        this.getCategory(); // اسم ميثود الـ reload الموجودة عندك
-      },
-      error: () => this.deleteError.set('CATEGORY.DELETE_FAILED'), // مفتاح ngx-translate
-    });
-}
+//   this.deleting.set(true);
+//   this.categoryService
+//     .deleteCategory(category.id)
+//     .pipe(finalize(() => this.deleting.set(false)))
+//     .subscribe({
+//       next: () => {
+//         this.categoryToDelete.set(null);
+//         this.getCategory(); // اسم ميثود الـ reload الموجودة عندك
+//       },
+//       error: () => this.deleteError.set('CATEGORY.DELETE_FAILED'), // مفتاح ngx-translate
+//     });
+// }
+
+ confirmDelete(): void {
+    const category = this.categoryToDelete();
+    if (!category || this.deleting()) return;
+
+    this.deleting.set(true);
+    this.deleteError.set(null); // مسح أي خطأ قديم قبل المحاولة
+
+    this.categoryService
+      .deleteCategory(category.id)
+      .pipe(finalize(() => this.deleting.set(false)))
+      .subscribe({
+        next: () => {
+          this.categoryToDelete.set(null);
+          
+          // 1. إشعار النجاح مترجم
+          const successTitle = this.translate.instant('COMMON.SUCCESS');
+          const successMsg = this.translate.instant('CATEGORY.DELETE_SUCCESS');
+          this.toastr.success(successMsg, successTitle);
+          
+          // 2. إعادة تحميل الفئات
+          this.getCategory(); 
+        },
+        error: (err) => {
+          console.error(err);
+          
+          // عرض الخطأ في الـ Modal (المفتاح هيترجم في الـ HTML لوحده)
+          this.deleteError.set('CATEGORY.DELETE_FAILED'); 
+          
+          // 3. إشعار الخطأ مترجم
+          const errorTitle = this.translate.instant('COMMON.DELETE_FAILED_TITLE'); // أو استخدم مفتاح خاص
+          const errorMsg = this.translate.instant('CATEGORY.DELETE_FAILED');
+          this.toastr.error(errorMsg, errorTitle);
+        },
+      });
+  }
 }

@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from '../../Service/category-service';
 import { LanguageService } from '../../../../core/services/language-service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   imports: [TranslatePipe, CommonModule, ReactiveFormsModule],
@@ -14,6 +15,8 @@ import { CommonModule } from '@angular/common';
 })
 export class AddCategory implements OnInit {
   form: FormGroup;
+  
+  private toastr = inject(ToastrService);
 
   // حالات بتتغير بعد رد الـ API: signals عشان الـ view تتحدّث لوحدها
   loading = signal(false);
@@ -37,6 +40,7 @@ export class AddCategory implements OnInit {
     });
   }
   langService = inject(LanguageService);
+    private translate = inject(TranslateService);
 
   get name() { return this.form.get('name')!; }
   get description() { return this.form.get('description')!; }
@@ -79,6 +83,41 @@ export class AddCategory implements OnInit {
     });
   }
 
+  // onSubmit(): void {
+  //   if (this.form.invalid || this.formLocked() || this.loading()) return;
+
+  //   this.loading.set(true);
+  //   this.errorMessage.set('');
+  //   this.successMessage.set('');
+
+  //   const { name, description } = this.form.getRawValue();
+  //   const dto = {
+  //     name: (name as string).trim(),
+  //     description: ((description as string | null) ?? '').trim(), // الباك مش بيقبل null
+  //   };
+
+  //   const request$ = this.isEdit
+  //     ? this.categoryService.updateCategory({ id: this.categoryId!, ...dto })
+  //     : this.categoryService.addCategory(dto);
+
+  //   request$.subscribe({
+  //     next: (res) => {
+  //       this.loading.set(false);
+  //       if (res?.statusCode === 200 || res?.statusCode === 201) {
+  //         this.successMessage.set(this.isEdit ? 'Admin.CATEGORY_UPDATED' : 'Admin.CATEGORY_ADDED');
+  //         if (!this.isEdit) this.form.reset({ name: '', description: '' });
+  //       } else {
+  //         this.errorMessage.set(res?.message || 'Admin.SOMETHING_WRONG');
+  //       }
+  //     },
+  //     error: (err) => {
+  //       this.loading.set(false);
+  //       this.errorMessage.set(err?.error?.message || 'Admin.SOMETHING_WRONG');
+  //       console.error(err);
+  //     },
+  //   });
+  // }
+
   onSubmit(): void {
     if (this.form.invalid || this.formLocked() || this.loading()) return;
 
@@ -89,7 +128,7 @@ export class AddCategory implements OnInit {
     const { name, description } = this.form.getRawValue();
     const dto = {
       name: (name as string).trim(),
-      description: ((description as string | null) ?? '').trim(), // الباك مش بيقبل null
+      description: ((description as string | null) ?? '').trim(), 
     };
 
     const request$ = this.isEdit
@@ -99,16 +138,48 @@ export class AddCategory implements OnInit {
     request$.subscribe({
       next: (res) => {
         this.loading.set(false);
+        
+        // التحقق من نجاح العملية
         if (res?.statusCode === 200 || res?.statusCode === 201) {
-          this.successMessage.set(this.isEdit ? 'Admin.CATEGORY_UPDATED' : 'Admin.CATEGORY_ADDED');
-          if (!this.isEdit) this.form.reset({ name: '', description: '' });
+          
+          // 1. تحديد مفتاح رسالة النجاح بناءً على الإضافة أو التعديل
+          const successKey = this.isEdit ? 'CATEGORY.UPDATE_SUCCESS' : 'CATEGORY.ADD_SUCCESS';
+          
+          // ترجمة النصوص
+          const successTitle = this.translate.instant('COMMON.SUCCESS');
+          const successMsg = this.translate.instant(successKey);
+
+          // عرض Toastr
+          this.toastr.success(successMsg, successTitle);
+
+          // 2. التوجيه لصفحة المنتجات (أو الفئات حسب المسار اللي عندك)
+          this.router.navigate(['/products']); 
+
         } else {
-          this.errorMessage.set(res?.message || 'Admin.SOMETHING_WRONG');
+          // في حالة وجود خطأ في الـ Response لكن حالة الشبكة سليمة (200)
+          const errorMsgKey = res?.message || 'COMMON.SOMETHING_WRONG';
+          
+          this.errorMessage.set(errorMsgKey);
+          
+          const errorTitle = this.translate.instant('COMMON.ERROR');
+          const errorMsg = this.translate.instant(errorMsgKey);
+          
+          this.toastr.error(errorMsg, errorTitle);
         }
       },
       error: (err) => {
         this.loading.set(false);
-        this.errorMessage.set(err?.error?.message || 'Admin.SOMETHING_WRONG');
+        
+        // لو الـ Backend رجع رسالة خطأ، بنستخدمها. لو لأ، بنستخدم مفتاح افتراضي
+        const errorMsgKey = err?.error?.message || 'COMMON.SOMETHING_WRONG';
+        
+        this.errorMessage.set(errorMsgKey);
+        
+        const errorTitle = this.translate.instant('COMMON.ERROR');
+        const errorMsg = this.translate.instant(errorMsgKey);
+        
+        this.toastr.error(errorMsg, errorTitle);
+        
         console.error(err);
       },
     });

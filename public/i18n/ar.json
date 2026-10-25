@@ -23,6 +23,10 @@
     "MOBILE": "موبايل",
       "SEARCH": "بحث",
     "RESET": "إعادة تعيين",
+        "ADD_SUCCESS": "تم إضافة المنتج بنجاح",
+    "UPDATE_SUCCESS": "تم تعديل المنتج بنجاح",
+    "SAVE_FAILED": "فشل الحفظ",
+    "PHOTO_REQUIRED_WARNING": "يرجى إرفاق صورة واحدة على الأقل للمنتج",
     "NEWEST": "الأحدث",
      "SHOWING": "عرض",
       "EDIT": "تعديل",
@@ -80,10 +84,20 @@
 },
  "CATEGORY": {
     "DELETE_TITLE": "حذف الفئة",
+     "ADD_SUCCESS": "تم إضافة الفئة بنجاح",
+    "UPDATE_SUCCESS": "تم تعديل الفئة بنجاح",
+    "DELETE_SUCCESS": "تم حذف الفئة بنجاح",
+    "DELETE_FAILED": "حدث خطأ أثناء محاولة حذف الفئة",
     "DELETE_CONFIRM": "هل أنت متأكد من حذف الفئة \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء."
   },
   "COMMON": {
     "CANCEL": "إلغاء",
+      "SUCCESS": "نجاح",
+        "WARNING": "تنبيه",
+    "INCOMPLETE_DATA": "بيانات غير مكتملة",
+    "CHECK_REQUIRED_FIELDS": "يرجى مراجعة الحقول المطلوبة",
+    "SOMETHING_WRONG": "حدث خطأ غير متوقع، يرجى المحاولة لاحقاً",
+       "ERROR": "خطأ",
     "DELETE": "حذف"
   },
   "ProductDe": {
