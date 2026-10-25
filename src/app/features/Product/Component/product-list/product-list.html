@@ -18,10 +18,49 @@
 
         <!-- شارة الخصم -->
         @if (discount(product) > 0) {
-          <span class="absolute top-3 start-3 z-10 rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-bold text-white shadow-md">
+          <span class="pointer-events-none absolute top-3 start-3 z-10 rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-bold text-white shadow-md">
             -{{ discount(product) }}%
           </span>
         }
+
+        <!-- ================= منيو الإجراءات ================= -->
+        <div class="absolute top-3 end-3 z-20">
+          <button
+            type="button"
+            (click)="toggleMenu($event, product.id)"
+            [attr.aria-label]="'Product.ACTIONS' | translate"
+            [attr.aria-expanded]="openMenuId() === product.id"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-gray-600 shadow-md backdrop-blur
+                   transition-all duration-200 hover:bg-white hover:text-indigo-600
+                   focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="12" cy="5" r="1.8" />
+              <circle cx="12" cy="12" r="1.8" />
+              <circle cx="12" cy="19" r="1.8" />
+            </svg>
+          </button>
+
+          @if (openMenuId() === product.id) {
+            <div
+              class="absolute end-0 mt-2 w-36 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 text-start shadow-xl"
+              role="menu">
+              <button
+                type="button"
+                role="menuitem"
+                (click)="onEdit(product)"
+                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                {{ 'Admin.EDIT' | translate }}
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                (click)="onDelete(product)"
+                class="block w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                {{ 'Admin.DELETE' | translate }}
+              </button>
+            </div>
+          }
+        </div>
 
         <!-- ================= الصور ================= -->
         <div class="flex flex-col bg-white p-4">
@@ -47,7 +86,7 @@
             }
           </div>
 
-          <!-- الصور المصغرة -->
+          <!-- الصور المصغرة (فوق اللينك عشان تفضل شغالة) -->
           @if (product.photos?.length > 1) {
             <div class="flex justify-center gap-2 overflow-x-auto pb-1">
               @for (photo of product.photos; track photo.imageName) {
@@ -56,7 +95,7 @@
                   (mouseenter)="selectPhoto(product, photo.imageName)"
                   (click)="selectPhoto(product, photo.imageName)"
                   [attr.aria-label]="product.name"
-                  class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 bg-white p-1 transition-all duration-200
+                  class="relative z-10 h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 bg-white p-1 transition-all duration-200
                          focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100"
                   [class]="mainPhoto(product) === photo.imageName
                     ? 'border-indigo-600 shadow-md scale-105'
@@ -73,7 +112,11 @@
         <div class="flex flex-grow flex-col border-t border-gray-100 p-4 text-center">
 
           <h3 class="mb-1 truncate text-lg font-medium text-gray-800 transition-colors duration-200 group-hover:text-indigo-600">
-            {{ product.name }}
+            <!-- الـ ::after بيغطي الكارت كله، فأي ضغطة عليه بتفتح التفاصيل -->
+            <a [routerLink]="['/products', product.id]"
+               class="after:absolute after:inset-0 focus:outline-none focus-visible:underline">
+              {{ product.name }}
+            </a>
           </h3>
 
           <p class="mb-3 line-clamp-2 text-xs text-gray-600">
@@ -90,10 +133,10 @@
               <span class="text-lg font-bold text-gray-800">{{ product.newPrice | currency }}</span>
             </div>
 
-            <!-- زرار السلة -->
+            <!-- زرار السلة (فوق اللينك) -->
             <button
               type="button"
-              class="cart-btn flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 font-medium text-white
+              class="cart-btn relative z-10 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 font-medium text-white
                      transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200
                      active:scale-95 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200 lg:px-6">
               <svg class="h-5 w-5 transition-transform duration-200 group-hover:-rotate-12" viewBox="0 0 24 24" fill="none"
@@ -104,7 +147,7 @@
               </svg>
               <span>{{ 'Product.ADD_TO_CART' | translate }}</span>
             </button>
-           
+
           </div>
         </div>
 
@@ -123,3 +166,53 @@
 
   </div>
 </div>
+
+<!-- ================= ديالوج الحذف ================= -->
+@if (productToDelete(); as p) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+       (click)="cancelDelete()">
+
+    <div class="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl"
+         role="alertdialog" aria-modal="true" aria-labelledby="delete-title"
+         (click)="$event.stopPropagation()">
+
+      <div class="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-red-50 text-red-500">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5" />
+        </svg>
+      </div>
+
+      <h2 id="delete-title" class="mb-1 text-lg font-bold text-gray-800">
+        {{ 'Admin.DELETE_TITLE' | translate }}
+      </h2>
+      <p class="mb-5 text-sm text-gray-500">
+        {{ 'Admin.DELETE_MESSAGE' | translate }}
+        <span class="block mt-1 truncate font-medium text-gray-800">{{ p.name }}</span>
+      </p>
+
+      @if (deleteError()) {
+        <p class="mb-4 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600" role="alert">
+          {{ deleteError() }}
+        </p>
+      }
+
+      <div class="flex gap-3">
+        <button type="button" (click)="cancelDelete()" [disabled]="deleting()"
+                class="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700
+                       transition-all duration-200 hover:bg-gray-50 active:scale-95
+                       focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 disabled:opacity-60">
+          {{ 'Admin.CANCEL' | translate }}
+        </button>
+
+        <button type="button" (click)="confirmDelete()" [disabled]="deleting()"
+                class="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white
+                       transition-all duration-200 hover:bg-red-700 active:scale-95
+                       focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200
+                       disabled:opacity-60 disabled:cursor-not-allowed">
+          {{ (deleting() ? 'Admin.DELETING' : 'Admin.DELETE') | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

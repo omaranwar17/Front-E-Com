@@ -84,6 +84,14 @@ export class Product implements OnInit {
     this.load$.next();
   }
 
+onProductDeleted(): void {
+  // لو ده آخر منتج في الصفحة ومش الصفحة الأولى، ارجع صفحة
+  if (this.products().length === 1 && this.pageNumber() > 1) {
+    this.pageNumber.update((p) => p - 1);
+  }
+  this.load$.next();
+}
+
   handleSearch(searchText: string) {
     this.searchText = searchText?.trim() ?? '';
     this.resetAndLoad();

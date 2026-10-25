@@ -7,7 +7,7 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { ProductService } from '../../Service/product-service';
@@ -41,19 +41,28 @@ function oldPriceValidator(group: AbstractControl): ValidationErrors | null {
   styleUrl: './add-product.scss',
   templateUrl: './add-product.html',
 })
-export class AddProduct implements OnInit{
-  
+export class AddProduct implements OnInit {
   private productService = inject(ProductService);
   langService = inject(LanguageService);
+  private _route = inject(ActivatedRoute);
+  private _router = inject(Router);
+
+  productId: number | null = null;
+
+  get isEdit(): boolean {
+    return this.productId !== null;
+  }
 
   categories = signal<ICategory[]>([]);
   photos = signal<IPhotoPreview[]>([]);
+  existingPhotos = signal<string[]>([]); // صور المنتج الحالية (في التعديل)
   photoError = signal<'type' | 'size' | 'max' | 'required' | null>(null);
   loading = signal(false);
   result = signal<'success' | 'error' | null>(null);
   serverMessage = signal('');
 
   readonly maxPhotos = MAX_PHOTOS;
+  readonly imageBase = 'https://localhost:7020'; // ⚠️ غيّره لنفس القيمة اللي في ProductList
 
   form = new FormGroup(
     {
@@ -75,6 +84,38 @@ export class AddProduct implements OnInit{
     this.productService.getCategory().subscribe({
       next: (res: any) => this.categories.set(res),
       error: (err) => console.error('Error fetching categories', err),
+    });
+
+    const id = this._route.snapshot.paramMap.get('id');
+    if (id && !Number.isNaN(Number(id))) {
+      this.productId = Number(id);
+      this.loadProduct(this.productId);
+    }
+  }
+
+
+photoUrl(name: string): string {
+  const base = this.imageBase.replace(/\/+$/, '');
+  const path = name.replace(/^\/+/, '');
+  return `${base}/${path}`;
+}
+
+  private loadProduct(id: number): void {
+    this.productService.getProductById(id).subscribe({
+      next: (p: any) => {
+        this.form.patchValue({
+          name: p.name,
+          description: p.description,
+          newPrice: p.newPrice,
+          oldPrice: p.oldPrice,
+          categoryId: p.categoryId,
+        });
+        this.existingPhotos.set((p.photos ?? []).map((ph: any) => ph.imageName));
+      },
+      error: (err) => {
+        console.error('Load product failed', err);
+        this._router.navigate(['/products']);
+      },
     });
   }
 
@@ -114,13 +155,15 @@ export class AddProduct implements OnInit{
     this.result.set(null);
     this.form.markAllAsTouched();
 
-    if (this.photos().length === 0) {
+    // الصور مطلوبة في الإضافة بس. في التعديل اختيارية (لو مفيش جديدة بتفضل القديمة)
+    if (!this.isEdit && this.photos().length === 0) {
       this.photoError.set('required');
     }
-    if (this.form.invalid || this.photos().length === 0) return;
+    if (this.form.invalid || (!this.isEdit && this.photos().length === 0)) return;
 
     const v = this.form.getRawValue();
     const fd = new FormData();
+    if (this.isEdit) fd.append('Id', String(this.productId));
     fd.append('Name', v.name.trim());
     fd.append('Description', v.description.trim());
     fd.append('NewPrice', String(v.newPrice));
@@ -129,25 +172,32 @@ export class AddProduct implements OnInit{
     // نفس الاسم لكل صورة، والأولى هي الرئيسية
     this.photos().forEach((p) => fd.append('Photos', p.file, p.file.name));
 
+    const request$ = this.isEdit
+      ? this.productService.updateProduct(this.productId!, fd)
+      : this.productService.addProduct(fd);
+
     this.loading.set(true);
-    this.productService
-      .addProduct(fd)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: () => {
-          this.result.set('success');
-          this.serverMessage.set('');
+    request$.pipe(finalize(() => this.loading.set(false))).subscribe({
+      next: () => {
+        this.result.set('success');
+        this.serverMessage.set('');
+        this.revokeAll();
+        this.photos.set([]);
+        this.photoError.set(null);
+
+        if (this.isEdit) {
+          // نعيد تحميل المنتج عشان نعرض الصور الجديدة
+          this.loadProduct(this.productId!);
+        } else {
           this.form.reset();
-          this.revokeAll();
-          this.photos.set([]);
-          this.photoError.set(null);
-        },
-        error: (err) => {
-          console.error('Add product failed', err);
-          this.serverMessage.set(err?.error?.message ?? '');
-          this.result.set('error');
-        },
-      });
+        }
+      },
+      error: (err) => {
+        console.error('Save product failed', err);
+        this.serverMessage.set(err?.error?.message ?? '');
+        this.result.set('error');
+      },
+    });
   }
 
   private revokeAll() {

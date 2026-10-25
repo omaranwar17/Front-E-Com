@@ -41,7 +41,23 @@ addProduct(formData: FormData) {
   );
 }
 
+getProductById(id: number): Observable<IProduct> {
+  return this._http.get<IProduct>(`${this.baseUrl}Product/${id}`);
+}
 
+updateProduct(id: number, formData: FormData) {
+  // زي addProduct: ماتحطش Content-Type بإيدك
+  return this._http.put<{ statusCode?: number; message?: string }>(
+    `${this.baseUrl}Product/${id}`,
+    formData
+  );
+}
+
+deleteProduct(id: number) {
+  return this._http.delete<{ statusCode?: number; message?: string }>(
+    `${this.baseUrl}Product/${id}`
+  );
+}
 
 
 

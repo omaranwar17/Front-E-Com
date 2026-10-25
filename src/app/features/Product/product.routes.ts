@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Product } from './Component/product/product';
 import { AddProduct } from './Component/add-product/add-product';
+import { ProductDetails } from './Component/product-details/product-details';
 
 export const productRoutes: Routes = [
   {
@@ -12,8 +13,7 @@ export const productRoutes: Routes = [
     path: 'addProduct',
     component: AddProduct,
   },
-  {
-    path: 'edit/:id', // مسار التعديل
-    component: AddProduct, // نفس الكومبوننت
-  }
+   { path: ':id', component: ProductDetails },
+{ path: 'edit/:id', component: AddProduct },
+
 ];
