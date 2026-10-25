@@ -5,8 +5,9 @@ import { ProductService } from '../../Service/product-service';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs';
 import { RouterLink } from '@angular/router';
+import { CategoryService } from '../../Service/category-service';
 
 @Component({
   imports: [TranslatePipe, CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
@@ -26,7 +27,7 @@ export class Categorys implements OnInit {
   private destroyRef = inject(DestroyRef);
   langService = inject(LanguageService);
 
-  constructor(private _ProductService: ProductService) {}
+  constructor(private _ProductService: ProductService , private categoryService:CategoryService) {}
 
   ngOnInit(): void {
     this.getCategory();
@@ -58,4 +59,35 @@ export class Categorys implements OnInit {
     this.selectedCategoryId.set(categoryId);
     this.categorySelected.emit(categoryId);
   }
+
+  categoryToDelete = signal<any | null>(null);
+deleting = signal(false);
+deleteError = signal<string | null>(null);
+
+askDelete(category: any): void {
+  this.deleteError.set(null);
+  this.categoryToDelete.set(category);
+}
+
+cancelDelete(): void {
+  if (this.deleting()) return;
+  this.categoryToDelete.set(null);
+}
+
+confirmDelete(): void {
+  const category = this.categoryToDelete();
+  if (!category || this.deleting()) return;
+
+  this.deleting.set(true);
+  this.categoryService
+    .deleteCategory(category.id)
+    .pipe(finalize(() => this.deleting.set(false)))
+    .subscribe({
+      next: () => {
+        this.categoryToDelete.set(null);
+        this.getCategory(); // اسم ميثود الـ reload الموجودة عندك
+      },
+      error: () => this.deleteError.set('CATEGORY.DELETE_FAILED'), // مفتاح ngx-translate
+    });
+}
 }

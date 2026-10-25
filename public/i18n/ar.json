@@ -33,6 +33,7 @@
   },
   "Admin": {
   "ADD_PRODUCT": "إضافة منتج",
+  "ADD_CATEGORY": "إضافة فئة",
   "BACK": "رجوع",
   "NAME": "اسم المنتج",
   "DESCRIPTION": "الوصف",
@@ -60,9 +61,30 @@
   "OLD_PRICE_INVALID": "السعر القديم لازم يكون أكبر من أو يساوي السعر الحالي",
   "PHOTO_REQUIRED": "أضف صورة واحدة على الأقل",
   "PHOTO_TYPE": "الصيغ المسموحة: JPG وPNG وWEBP",
+  
+    "EDIT_CATEGORY": "تعديل الفئة",
+
+    "CATEGORY_NAME": "اسم الفئة",
+    "CATEGORY_NAME_PLACEHOLDER": "مثال: إلكترونيات",
+    "CATEGORY_DESCRIPTION": "الوصف (اختياري)",
+    "CATEGORY_DESCRIPTION_PLACEHOLDER": "وصف مختصر...",
+
+    "CATEGORY_ADDED": "تمت إضافة الفئة بنجاح ✅",
+    "NAME_REQUIRED": "الاسم مطلوب",
+    "NAME_TOO_LONG": "الاسم طويل جداً (الحد 100)",
+    "SOMETHING_WRONG": "حصل خطأ، حاول تاني",
   "EDIT": "تعديل",
   "DELETE": "حذف",
   "PHOTO_SIZE": "حجم الصورة لازم يكون أقل من 2MB",
   "PHOTO_MAX": "الحد الأقصى 6 صور"
-}
+},
+ "CATEGORY": {
+    "DELETE_TITLE": "حذف الفئة",
+    "DELETE_CONFIRM": "هل أنت متأكد من حذف الفئة \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء."
+  },
+  "COMMON": {
+    "CANCEL": "إلغاء",
+    "DELETE": "حذف"
+  }
+
 }
