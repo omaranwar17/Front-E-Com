@@ -15,7 +15,13 @@
    "Product": {
     "SORTING": "Sorting",
     "CATEGORIES": "Categories",
+     "DELETE_SUCCESS": "Product deleted successfully",
+    "DELETE_FAILED": "Delete failed",
     "SEARCH_PLACEHOLDER": "Search products...",
+        "ADD_SUCCESS": "Product added successfully",
+    "UPDATE_SUCCESS": "Product updated successfully",
+    "SAVE_FAILED": "Save Failed",
+    "PHOTO_REQUIRED_WARNING": "Please attach at least one photo for the product",
     "NAME_AZ": "Name (A-Z)",
     "PRICE_LOW_HIGH": "Price: Low to High",
     "PRICE_HIGH_LOW": "Price: High to Low",
@@ -78,10 +84,39 @@
 },
 "CATEGORY": {
     "DELETE_TITLE": "Delete Category",
+    "DELETE_SUCCESS": "Category deleted successfully",
+     "ADD_SUCCESS": "Category added successfully",
+    "UPDATE_SUCCESS": "Category updated successfully",
+    "DELETE_FAILED": "An error occurred while deleting the category",
     "DELETE_CONFIRM": "Are you sure you want to delete the category \"{{name}}\"? This action cannot be undone."
   },
  "COMMON": {
     "CANCEL": "Cancel",
+     "SUCCESS": "Success",
+   
+        "WARNING": "Warning",
+    "INCOMPLETE_DATA": "Incomplete Data",
+    "CHECK_REQUIRED_FIELDS": "Please check the required fields",
+    "SOMETHING_WRONG": "Something went wrong, please try again later",
     "DELETE": "Delete"
-  }
+  },
+  "ProductDe": {
+  "YOU_SAVE": "...",
+  "ADD_TO_CART": "...",
+  "NOT_FOUND": "...",
+
+  "OFF": "off",
+  "QUANTITY": "Quantity",
+  "TOTAL": "Total",
+  "DECREASE": "Decrease quantity",
+  "INCREASE": "Increase quantity",
+  "BUY_NOW": "Buy now",
+  "ADD_TO_WISHLIST": "Add to wishlist",
+  "REMOVE_FROM_WISHLIST": "Remove from wishlist",
+  "DETAILS": "Product details",
+  "DELIVERY_TITLE": "Fast delivery",
+  "DELIVERY_INFO": "Delivery within 3 days from the date of purchase.",
+  "SUPPORT_TITLE": "Need help?",
+  "SUPPORT_INFO": "Have a question about this product? Contact our team via live chat or email."
+}
 }

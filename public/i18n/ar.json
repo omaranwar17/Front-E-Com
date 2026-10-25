@@ -23,6 +23,10 @@
     "MOBILE": "موبايل",
       "SEARCH": "بحث",
     "RESET": "إعادة تعيين",
+        "ADD_SUCCESS": "تم إضافة المنتج بنجاح",
+    "UPDATE_SUCCESS": "تم تعديل المنتج بنجاح",
+    "SAVE_FAILED": "فشل الحفظ",
+    "PHOTO_REQUIRED_WARNING": "يرجى إرفاق صورة واحدة على الأقل للمنتج",
     "NEWEST": "الأحدث",
      "SHOWING": "عرض",
       "EDIT": "تعديل",
@@ -80,11 +84,40 @@
 },
  "CATEGORY": {
     "DELETE_TITLE": "حذف الفئة",
+     "ADD_SUCCESS": "تم إضافة الفئة بنجاح",
+    "UPDATE_SUCCESS": "تم تعديل الفئة بنجاح",
+    "DELETE_SUCCESS": "تم حذف الفئة بنجاح",
+    "DELETE_FAILED": "حدث خطأ أثناء محاولة حذف الفئة",
     "DELETE_CONFIRM": "هل أنت متأكد من حذف الفئة \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء."
   },
   "COMMON": {
     "CANCEL": "إلغاء",
+      "SUCCESS": "نجاح",
+        "WARNING": "تنبيه",
+    "INCOMPLETE_DATA": "بيانات غير مكتملة",
+    "CHECK_REQUIRED_FIELDS": "يرجى مراجعة الحقول المطلوبة",
+    "SOMETHING_WRONG": "حدث خطأ غير متوقع، يرجى المحاولة لاحقاً",
+       "ERROR": "خطأ",
     "DELETE": "حذف"
-  }
+  },
+  "ProductDe": {
+  "YOU_SAVE": "...",
+  "ADD_TO_CART": "...",
+  "NOT_FOUND": "...",
+
+  "OFF": "خصم",
+  "QUANTITY": "الكمية",
+  "TOTAL": "الإجمالي",
+  "DECREASE": "تقليل الكمية",
+  "INCREASE": "زيادة الكمية",
+  "BUY_NOW": "اشترِ الآن",
+  "ADD_TO_WISHLIST": "أضف إلى المفضلة",
+  "REMOVE_FROM_WISHLIST": "إزالة من المفضلة",
+  "DETAILS": "تفاصيل المنتج",
+  "DELIVERY_TITLE": "توصيل سريع",
+  "DELIVERY_INFO": "التوصيل خلال 3 أيام من تاريخ الشراء.",
+  "SUPPORT_TITLE": "تحتاج مساعدة؟",
+  "SUPPORT_INFO": "عندك سؤال عن المنتج؟ تواصل مع فريقنا عبر الدردشة المباشرة أو البريد."
+}
 
 }

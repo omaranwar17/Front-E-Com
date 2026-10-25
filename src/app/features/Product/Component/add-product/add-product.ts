@@ -8,10 +8,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { ProductService } from '../../Service/product-service';
 import { LanguageService } from '../../../../core/services/language-service';
+import { ToastrService } from 'ngx-toastr';
 
 interface ICategory {
   id: number;
@@ -60,6 +61,9 @@ export class AddProduct implements OnInit {
   loading = signal(false);
   result = signal<'success' | 'error' | null>(null);
   serverMessage = signal('');
+   private toastr = inject(ToastrService);
+   private router = inject(Router);
+    private translate = inject(TranslateService);
 
   readonly maxPhotos = MAX_PHOTOS;
   readonly imageBase = 'https://localhost:7020'; // ⚠️ غيّره لنفس القيمة اللي في ProductList
@@ -150,52 +154,139 @@ photoUrl(name: string): string {
     this.photoError.set(null);
   }
 
-  submit() {
+  // submit() {
+  //   if (this.loading()) return;
+  //   this.result.set(null);
+  //   this.form.markAllAsTouched();
+
+  //   // الصور مطلوبة في الإضافة بس. في التعديل اختيارية (لو مفيش جديدة بتفضل القديمة)
+  //   if (!this.isEdit && this.photos().length === 0) {
+  //     this.photoError.set('required');
+  //   }
+  //   if (this.form.invalid || (!this.isEdit && this.photos().length === 0)) return;
+
+  //   const v = this.form.getRawValue();
+  //   const fd = new FormData();
+  //   if (this.isEdit) fd.append('Id', String(this.productId));
+  //   fd.append('Name', v.name.trim());
+  //   fd.append('Description', v.description.trim());
+  //   fd.append('NewPrice', String(v.newPrice));
+  //   fd.append('OldPrice', String(v.oldPrice ?? 0)); // decimal مش nullable في الباك
+  //   fd.append('CategoryId', String(v.categoryId));
+  //   // نفس الاسم لكل صورة، والأولى هي الرئيسية
+  //   this.photos().forEach((p) => fd.append('Photos', p.file, p.file.name));
+
+  //   const request$ = this.isEdit
+  //     ? this.productService.updateProduct(this.productId!, fd)
+  //     : this.productService.addProduct(fd);
+
+  //   this.loading.set(true);
+  //   request$.pipe(finalize(() => this.loading.set(false))).subscribe({
+  //     next: () => {
+  //       this.result.set('success');
+  //       this.serverMessage.set('');
+  //       this.revokeAll();
+  //       this.photos.set([]);
+  //       this.photoError.set(null);
+
+  //       if (this.isEdit) {
+  //         // نعيد تحميل المنتج عشان نعرض الصور الجديدة
+  //         this.loadProduct(this.productId!);
+  //       } else {
+  //         this.form.reset();
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Save product failed', err);
+  //       this.serverMessage.set(err?.error?.message ?? '');
+  //       this.result.set('error');
+  //     },
+  //   });
+  // }
+
+
+ submit() {
     if (this.loading()) return;
+    
     this.result.set(null);
+    this.serverMessage.set('');
     this.form.markAllAsTouched();
 
-    // الصور مطلوبة في الإضافة بس. في التعديل اختيارية (لو مفيش جديدة بتفضل القديمة)
+    // 1. التحقق من الصور (في حالة الإضافة فقط)
     if (!this.isEdit && this.photos().length === 0) {
       this.photoError.set('required');
+      
+      const warnTitle = this.translate.instant('COMMON.WARNING');
+      const warnMsg = this.translate.instant('Product.PHOTO_REQUIRED_WARNING');
+      this.toastr.warning(warnMsg, warnTitle);
+    } else {
+      this.photoError.set(null);
     }
-    if (this.form.invalid || (!this.isEdit && this.photos().length === 0)) return;
 
+    // 2. التحقق من صحة الفورم
+    if (this.form.invalid) {
+      const errTitle = this.translate.instant('COMMON.INCOMPLETE_DATA');
+      const errMsg = this.translate.instant('COMMON.CHECK_REQUIRED_FIELDS');
+      this.toastr.error(errMsg, errTitle);
+      return;
+    }
+
+    if (!this.isEdit && this.photos().length === 0) {
+      return;
+    }
+
+    // 3. تجهيز البيانات
     const v = this.form.getRawValue();
     const fd = new FormData();
+    
     if (this.isEdit) fd.append('Id', String(this.productId));
     fd.append('Name', v.name.trim());
     fd.append('Description', v.description.trim());
     fd.append('NewPrice', String(v.newPrice));
-    fd.append('OldPrice', String(v.oldPrice ?? 0)); // decimal مش nullable في الباك
+    fd.append('OldPrice', String(v.oldPrice ?? 0)); 
     fd.append('CategoryId', String(v.categoryId));
-    // نفس الاسم لكل صورة، والأولى هي الرئيسية
+    
     this.photos().forEach((p) => fd.append('Photos', p.file, p.file.name));
 
+    // 4. تحديد الطلب
     const request$ = this.isEdit
       ? this.productService.updateProduct(this.productId!, fd)
       : this.productService.addProduct(fd);
 
+    // 5. الإرسال
     this.loading.set(true);
-    request$.pipe(finalize(() => this.loading.set(false))).subscribe({
+    
+    request$.pipe(
+      finalize(() => this.loading.set(false))
+    ).subscribe({
       next: () => {
-        this.result.set('success');
-        this.serverMessage.set('');
         this.revokeAll();
         this.photos.set([]);
         this.photoError.set(null);
 
-        if (this.isEdit) {
-          // نعيد تحميل المنتج عشان نعرض الصور الجديدة
-          this.loadProduct(this.productId!);
-        } else {
-          this.form.reset();
-        }
+        // عرض رسالة النجاح
+        const successTitle = this.translate.instant('COMMON.SUCCESS');
+        const successMsgKey = this.isEdit ? 'Product.UPDATE_SUCCESS' : 'Product.ADD_SUCCESS';
+        const successMsg = this.translate.instant(successMsgKey);
+        
+        this.toastr.success(successMsg, successTitle);
+
+        // التوجيه المباشر لصفحة المنتجات
+        this.router.navigate(['/products']); 
       },
       error: (err) => {
         console.error('Save product failed', err);
+        
+        // لو السيرفر رجع رسالة، بنحاول نستخدمها. لو لأ، بنستخدم المفتاح الافتراضي
+        const errorMsgKey = err?.error?.message || 'COMMON.SOMETHING_WRONG';
+        
         this.serverMessage.set(err?.error?.message ?? '');
         this.result.set('error');
+        
+        const errTitle = this.translate.instant('Product.SAVE_FAILED');
+        const errMsg = this.translate.instant(errorMsgKey);
+        
+        this.toastr.error(errMsg, errTitle);
       },
     });
   }

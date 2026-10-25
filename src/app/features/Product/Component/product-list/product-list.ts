@@ -2,9 +2,10 @@ import { Component, EventEmitter, HostListener, inject, Input, Output, signal } 
 import { IProduct } from '../../../../shared/Interfases/IProduct';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../../../core/services/language-service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Route, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../Service/product-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   imports: [CommonModule, TranslatePipe, RouterLink],
@@ -16,10 +17,12 @@ export class ProductList {
  @Input() products: IProduct[] = [];
   @Input() total = 0;
   constructor(private _router:Router){}
+    private toastr = inject(ToastrService);
   @Output() deleted = new EventEmitter<void>();
   productToDelete = signal<IProduct | null>(null);
 deleting = signal(false);
 deleteError = signal('');
+private translate = inject(TranslateService);
 private _productService = inject(ProductService);
     readonly imageBase = 'https://localhost:7020/';
   langService = inject(LanguageService);
@@ -55,6 +58,8 @@ cancelDelete(): void {
   this.productToDelete.set(null);
 }
 
+
+
 confirmDelete(): void {
   const product = this.productToDelete();
   if (!product || this.deleting()) return;
@@ -66,12 +71,28 @@ confirmDelete(): void {
     next: () => {
       this.deleting.set(false);
       this.productToDelete.set(null);
+      
+      // استخدام translate.instant بدل الـ Pipe
+      const title = this.translate.instant('COMMON.SUCCESS');
+      const msg = this.translate.instant('Product.DELETE_SUCCESS');
+      
+      this.toastr.success(msg, title);
+      
       this.deleted.emit();
     },
     error: (err) => {
       console.error('Delete failed', err);
       this.deleting.set(false);
-      this.deleteError.set(err?.error?.message ?? '');
+      
+      const errorMsgKey = err?.error?.message || 'COMMON.SOMETHING_WRONG';
+      
+      // لو الباك إند بيرجع نص مش مفتاح ترجمة، هيفضل زي ما هو.. لو بيرجع مفتاح، هيترجم
+      this.deleteError.set(errorMsgKey); 
+      
+      const title = this.translate.instant('Product.DELETE_FAILED'); // أو COMMON.ERROR
+      const msg = this.translate.instant(errorMsgKey);
+      
+      this.toastr.error(msg, title);
     },
   });
 }
