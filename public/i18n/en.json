@@ -118,5 +118,16 @@
   "DELIVERY_INFO": "Delivery within 3 days from the date of purchase.",
   "SUPPORT_TITLE": "Need help?",
   "SUPPORT_INFO": "Have a question about this product? Contact our team via live chat or email."
+},
+"CART": {
+  "TITLE": "Shopping cart",
+  "EMPTY": "Your cart is empty",
+  "CONTINUE": "Continue shopping",
+  "REMOVE": "Remove",
+  "CLEAR": "Clear cart",
+  "SUMMARY": "Order summary",
+  "ITEMS": "Items",
+  "TOTAL": "Total",
+  "CHECKOUT": "Checkout"
 }
 }

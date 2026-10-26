@@ -9,6 +9,10 @@ export const routes: Routes = [
     path: 'products',
     loadChildren: () => import('./features/Product/product.routes').then(m => m.productRoutes)
   },
+   {
+    path: 'Carts',
+    loadChildren: () => import('./features/Carts/Carts.routes').then(m => m.CartsRoutes)
+  },
 
   {
     path: '',
