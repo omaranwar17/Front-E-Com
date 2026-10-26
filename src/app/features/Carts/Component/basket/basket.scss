@@ -1,0 +1,49 @@
+/* ===== Cart animations ===== */
+@keyframes cart-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes cart-item-leave {
+  from { opacity: 1; transform: translateX(0); max-height: 10rem; }
+  to {
+    opacity: 0;
+    transform: translateX(var(--cart-shift, 2rem));
+    max-height: 0;
+    padding-block: 0;
+    margin-top: 0;
+    border-width: 0;
+  }
+}
+
+@keyframes cart-bump {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.cart-item-enter,
+.cart-fade-in {
+  animation: cart-fade-up 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.cart-item-leave {
+  overflow: hidden;
+  animation: cart-item-leave 300ms ease-in forwards;
+}
+:dir(rtl) .cart-item-leave { --cart-shift: -2rem; }
+
+.cart-bump {
+  display: inline-block;
+  animation: cart-bump 250ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-item-enter,
+  .cart-item-leave,
+  .cart-fade-in,
+  .cart-bump {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}

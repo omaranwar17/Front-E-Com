@@ -1,0 +1,105 @@
+<section class="mx-auto max-w-6xl px-4 py-8">
+  <h1 class="mb-6 text-2xl font-bold text-gray-900">
+    {{ 'CART.TITLE' | translate }}
+    @if (basket.itemCount()) {
+      @for (c of [basket.itemCount()]; track c) {
+        <span animate.enter="cart-bump" class="ms-2 text-base font-normal text-gray-500">({{ c }})</span>
+      }
+    }
+  </h1>
+
+  @if (basket.items().length) {
+    <div class="grid gap-6 lg:grid-cols-3">
+
+      <!-- Items -->
+      <ul class="space-y-4 lg:col-span-2">
+        @for (item of basket.items(); track item.id) {
+          <li
+            animate.enter="cart-item-enter"
+            animate.leave="cart-item-leave"
+            [style.animation-delay.ms]="$index < 6 ? $index * 60 : 0"
+            class="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+            <img
+              [src]="imageUrl(item.image)"
+              [alt]="item.name"
+              (error)="onImgError($event)"
+              class="h-24 w-24 shrink-0 rounded-lg bg-gray-50 object-contain" />
+
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-semibold text-gray-900">{{ item.name }}</p>
+              <p class="text-sm text-gray-500">{{ item.category }}</p>
+              <p class="mt-1 text-sm font-medium text-indigo-600">{{ item.price | currency }}</p>
+
+              <!-- Quantity stepper -->
+              <div class="mt-3 inline-flex items-center overflow-hidden rounded-lg border border-gray-300">
+                <button type="button"
+                  (click)="basket.decrementItem(item.id).subscribe()"
+                  class="h-9 w-9 text-lg text-gray-700 transition hover:bg-gray-100 active:bg-gray-200 active:scale-90"
+                  aria-label="-">−</button>
+
+                @for (q of [item.qunatity]; track q) {
+                  <span animate.enter="cart-bump"
+                        class="w-10 select-none text-center text-sm font-medium">{{ q }}</span>
+                }
+
+                <button type="button"
+                  (click)="basket.incrementItem(item.id).subscribe()"
+                  class="h-9 w-9 text-lg text-gray-700 transition hover:bg-gray-100 active:bg-gray-200 active:scale-90"
+                  aria-label="+">+</button>
+              </div>
+            </div>
+
+            <div class="flex flex-col items-end gap-3 text-end">
+              @for (line of [item.price * item.qunatity]; track line) {
+                <p animate.enter="cart-bump" class="font-bold text-gray-900">{{ line | currency }}</p>
+              }
+              <button type="button"
+                (click)="basket.removeItem(item.id).subscribe()"
+                class="text-sm text-red-600 transition hover:text-red-700 hover:underline active:scale-95">
+                {{ 'CART.REMOVE' | translate }}
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <!-- Summary -->
+      <aside animate.enter="cart-fade-in"
+             class="h-fit rounded-xl border border-gray-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ 'CART.SUMMARY' | translate }}</h2>
+
+        <div class="flex justify-between py-2 text-sm text-gray-600">
+          <span>{{ 'CART.ITEMS' | translate }}</span>
+          <span>{{ basket.itemCount() }}</span>
+        </div>
+
+        <div class="mt-2 flex justify-between border-t border-gray-200 pt-4 text-lg font-bold text-gray-900">
+          <span>{{ 'CART.TOTAL' | translate }}</span>
+          @for (t of [basket.totalPrice()]; track t) {
+            <span animate.enter="cart-bump">{{ t | currency }}</span>
+          }
+        </div>
+
+        <button type="button"
+          class="mt-6 w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition hover:bg-indigo-700 active:scale-95">
+          {{ 'CART.CHECKOUT' | translate }}
+        </button>
+
+        <button type="button"
+          (click)="basket.clearBasket().subscribe()"
+          class="mt-3 w-full rounded-lg border border-gray-300 py-2.5 text-sm text-gray-700 transition hover:bg-gray-50 active:scale-95">
+          {{ 'CART.CLEAR' | translate }}
+        </button>
+      </aside>
+    </div>
+  } @else {
+    <div animate.enter="cart-fade-in"
+         class="rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center">
+      <p class="mb-4 text-gray-500">{{ 'CART.EMPTY' | translate }}</p>
+      <a routerLink="/products"
+         class="inline-block rounded-lg bg-indigo-600 px-6 py-2.5 font-medium text-white transition hover:bg-indigo-700 active:scale-95">
+        {{ 'CART.CONTINUE' | translate }}
+      </a>
+    </div>
+  }
+</section>

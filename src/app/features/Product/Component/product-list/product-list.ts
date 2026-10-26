@@ -6,6 +6,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Route, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../Service/product-service';
 import { ToastrService } from 'ngx-toastr';
+import { BasketService } from '../../../Carts/Service/BasketService';
 
 @Component({
   imports: [CommonModule, TranslatePipe, RouterLink],
@@ -24,6 +25,7 @@ deleting = signal(false);
 deleteError = signal('');
 private translate = inject(TranslateService);
 private _productService = inject(ProductService);
+private readonly basket = inject(BasketService);
     readonly imageBase = 'https://localhost:7020/';
   langService = inject(LanguageService);
     private selectedPhotos = signal<Record<number, string>>({});
@@ -117,4 +119,15 @@ onEscape(): void {
     if (!product.oldPrice || product.oldPrice <= product.newPrice) return 0;
     return Math.round((1 - product.newPrice / product.oldPrice) * 100);
   }
+
+  addToCart(product: IProduct): void {
+  this.basket.addProduct(product).subscribe({
+    next: () => this.toastr.success(product.name),
+    error: (e) => {
+      console.error('Add to cart failed', e.status, e.error);
+      this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));
+    },
+  });
+}
+
 }
