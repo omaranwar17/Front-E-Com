@@ -11,3 +11,9 @@ export interface BasketItem {
   qunatity: number
   category: string
 }
+
+export interface IBasketTotal {
+  shipping: number;
+  subtotal: number;
+  total: number;
+}

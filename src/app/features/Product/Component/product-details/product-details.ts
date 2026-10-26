@@ -2,10 +2,12 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { IProduct } from '../../../../shared/Interfases/IProduct';
 import { ProductService } from '../../Service/product-service';
+import { BasketService } from '../../../Carts/Service/BasketService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   imports: [RouterLink, TranslatePipe, CurrencyPipe],
@@ -17,7 +19,10 @@ export class ProductDetails implements OnInit {
 
   private _route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private translate = inject(TranslateService);
+   private toastr = inject(ToastrService);
   private destroyRef = inject(DestroyRef);
+  private readonly basket = inject(BasketService);
 
   readonly imageBase = 'https://localhost:7020'; // ⚠️ انسخ القيمة الفعلية من ProductList
   readonly maxQuantity = 99;
@@ -89,14 +94,43 @@ export class ProductDetails implements OnInit {
     this.wishlisted.update((v) => !v);
   }
 
-  addToCart(): void {
-    const p = this.product();
-    if (!p) return;
-    // TODO: اربطها بالـ cart service عندك، مثلًا: this.cartService.add(p.id, this.quantity());
-  }
+//    addToCart(product: IProduct): void {
+//   this.basket.addProduct(product).subscribe({
+//     next: () => this.toastr.success(product.name),
+//     error: (e) => {
+//       console.error('Add to cart failed', e.status, e.error);
+//       this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));
+//     },
+//   });
+// }
 
-  buyNow(): void {
-    this.addToCart();
-    // TODO: inject(Router) وبعدها: this.router.navigate(['/cart']);
-  }
+addToCart(product: IProduct): void {
+  // بنقرأ الكمية الحالية من الـ Signal
+  const selectedQty = this.quantity(); 
+
+  // بنبعتها للسيرفس
+  this.basket.addProduct(product, selectedQty).subscribe({
+    next: () => this.toastr.success(product.name),
+    error: (e) => {
+      console.error('Add to cart failed', e.status, e.error);
+      this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));
+    },
+  });
+}
+
+buyNow(product: IProduct): void {
+  const selectedQty = this.quantity();
+  this.basket.addProduct(product, selectedQty).subscribe({
+    next: () => {
+      // بعد الإضافة، نروح لصفحة السلة (أو الـ Checkout)
+      // تأكد إنك معمل inject للـ Router فوق
+      // this.router.navigate(['/Carts']); 
+      this.toastr.success('تمت الإضافة، جاري تحويلك...');
+    },
+    error: (e) => this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'))
+  });
+}
+   
+
+  
 }

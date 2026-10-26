@@ -101,9 +101,9 @@
     "DELETE": "حذف"
   },
   "ProductDe": {
-  "YOU_SAVE": "...",
-  "ADD_TO_CART": "...",
-  "NOT_FOUND": "...",
+  "YOU_SAVE": "أنت توفر",
+    "ADD_TO_CART": "أضف إلى السلة",
+    "NOT_FOUND": "المنتج غير موجود",
 
   "OFF": "خصم",
   "QUANTITY": "الكمية",

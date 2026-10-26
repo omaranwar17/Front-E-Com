@@ -101,9 +101,9 @@
     "DELETE": "Delete"
   },
   "ProductDe": {
-  "YOU_SAVE": "...",
-  "ADD_TO_CART": "...",
-  "NOT_FOUND": "...",
+    "YOU_SAVE": "You save",
+    "ADD_TO_CART": "Add to Cart",
+    "NOT_FOUND": "Product not found",
 
   "OFF": "off",
   "QUANTITY": "Quantity",

@@ -167,7 +167,7 @@
 
           <!-- الأزرار -->
           <div class="mt-auto flex flex-wrap gap-3 border-t border-gray-100 pt-6">
-            <button type="button" (click)="addToCart()"
+            <button type="button" (click)="addToCart(p)"
                     class="flex min-w-[9rem] flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 font-medium text-white
                            transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 active:scale-95
                            focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200">
@@ -180,7 +180,7 @@
               <span>{{ 'ProductDe.ADD_TO_CART' | translate }}</span>
             </button>
 
-            <button type="button" (click)="buyNow()"
+            <button type="button" (click)="buyNow(p)"
                     class="flex min-w-[8rem] flex-1 items-center justify-center rounded-xl border border-indigo-200 bg-white px-6 py-3 font-medium text-indigo-600
                            transition-all duration-200 hover:border-indigo-300 hover:bg-indigo-50 active:scale-95
                            focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100">
