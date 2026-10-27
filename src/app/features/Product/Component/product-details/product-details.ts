@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { IProduct } from '../../../../shared/Interfases/IProduct';
@@ -23,6 +23,7 @@ export class ProductDetails implements OnInit {
    private toastr = inject(ToastrService);
   private destroyRef = inject(DestroyRef);
   private readonly basket = inject(BasketService);
+private router = inject(Router);
 
   readonly imageBase = 'https://localhost:7020'; // ⚠️ انسخ القيمة الفعلية من ProductList
   readonly maxQuantity = 99;
@@ -74,13 +75,33 @@ export class ProductDetails implements OnInit {
     return `${base}/${name.replace(/^\/+/, '')}`;
   }
 
-  increase(): void {
-    this.quantity.update((q) => Math.min(q + 1, this.maxQuantity));
+ increase(): void {
+  if (this.quantity() >= this.maxQuantity) {
+    this.toastr.success(
+      this.translate.instant('Product.MAX_QTY', { max: this.maxQuantity })
+    );
+    return;
   }
+  this.quantity.update((q) => q + 1);
+  this.toastr.success(
+    this.translate.instant('Product.QTY_UPDATED', { qty: this.quantity() }),
+    '',
+    { timeOut: 1200 }
+  );
+}
 
-  decrease(): void {
-    this.quantity.update((q) => Math.max(q - 1, 1));
+decrease(): void {
+  if (this.quantity() <= 1) {
+    this.toastr.success(this.translate.instant('Product.MIN_QTY'));
+    return;
   }
+  this.quantity.update((q) => q - 1);
+  this.toastr.success(
+    this.translate.instant('Product.QTY_UPDATED', { qty: this.quantity() }),
+    '',
+    { timeOut: 1200 }
+  );
+}
 
   setQuantity(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -117,19 +138,11 @@ addToCart(product: IProduct): void {
     },
   });
 }
-
-buyNow(product: IProduct): void {
-  const selectedQty = this.quantity();
-  this.basket.addProduct(product, selectedQty).subscribe({
-    next: () => {
-      // بعد الإضافة، نروح لصفحة السلة (أو الـ Checkout)
-      // تأكد إنك معمل inject للـ Router فوق
-      // this.router.navigate(['/Carts']); 
-      this.toastr.success('تمت الإضافة، جاري تحويلك...');
-    },
-    error: (e) => this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'))
-  });
+grtCheck()
+{
+this.router.navigate(['/Carts/Checkout']);
 }
+  
    
 
   

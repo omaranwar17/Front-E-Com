@@ -101,22 +101,17 @@
           <h1 class="mb-5 break-words text-2xl font-bold leading-snug text-gray-800 sm:text-3xl">{{ p.name }}</h1>
 
           <!-- السعر -->
-          <div class="mb-6 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4">
-            @if (p.oldPrice > 0 && discount() > 0) {
-              <div class="mb-1 flex flex-wrap items-center gap-2">
-                <span class="text-base text-red-300 line-through">{{ p.oldPrice | currency }}</span>
-                <span class="rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-500">
-                  {{ discount() }}% {{ 'ProductDe.OFF' | translate }}
-                </span>
-              </div>
-            }
-            <span class="text-3xl font-bold text-indigo-600">{{ p.newPrice | currency }}</span>
-            @if (discount() > 0) {
-              <p class="mt-1 text-sm font-medium text-indigo-700">
-                {{ 'ProductDe.YOU_SAVE' | translate }} {{ (p.oldPrice - p.newPrice) | currency }}
-              </p>
-            }
-          </div>
+       <div class="mb-6 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4">
+  @if (discount() > 0) {
+    <div class="mb-1 flex flex-wrap items-center gap-2">
+      <span class="text-base text-red-300 line-through">{{ p.oldPrice | currency }}</span>
+      <span class="rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-500">
+        {{ discount() }}% {{ 'ProductDe.OFF' | translate }}
+      </span>
+    </div>
+  }
+  <span class="text-3xl font-bold text-indigo-600">{{ p.newPrice | currency }}</span>
+</div>
 
           <!-- الكمية -->
           <div class="mb-6">
@@ -180,7 +175,7 @@
               <span>{{ 'ProductDe.ADD_TO_CART' | translate }}</span>
             </button>
 
-            <button type="button" (click)="buyNow(p)"
+            <button type="button" (click)="grtCheck()" 
                     class="flex min-w-[8rem] flex-1 items-center justify-center rounded-xl border border-indigo-200 bg-white px-6 py-3 font-medium text-indigo-600
                            transition-all duration-200 hover:border-indigo-300 hover:bg-indigo-50 active:scale-95
                            focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100">

@@ -1,7 +1,7 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
-import { BasketItem, Carts } from '../../../shared/Interfases/basket';
+import { BasketItem, Carts, IBasketTotal } from '../../../shared/Interfases/basket';
 
 export type NewBasketItem = Omit<BasketItem, 'qunatity'>;
 
@@ -23,6 +23,9 @@ export class BasketService {
   private readonly baseUrl = 'https://localhost:7020/api/Basket';
   private readonly storageKey = 'basket_id';
 
+  private readonly FREE_SHIPPING_THRESHOLD = 30000;
+  private readonly SHIPPING_FEE = 50; // غيّرها لرسوم الشحن الحقيقية
+
   private readonly _basket = signal<Carts | null>(null);
   readonly basket = this._basket.asReadonly();
 
@@ -32,9 +35,27 @@ export class BasketService {
     this.items().reduce((sum, i) => sum + i.qunatity, 0)
   );
 
-  readonly totalPrice = computed(() =>
+  readonly subtotal = computed(() =>
     this.items().reduce((sum, i) => sum + i.price * i.qunatity, 0)
   );
+
+  readonly shipping = computed(() => {
+    const sub = this.subtotal();
+    if (sub === 0) return 0; // السلة فاضية
+    return sub > this.FREE_SHIPPING_THRESHOLD ? 0 : this.SHIPPING_FEE;
+  });
+
+  readonly total = computed(() => this.subtotal() + this.shipping());
+
+  /** alias قديم عشان أي مكان لسه بيستخدم totalPrice ما يتكسرش */
+  readonly totalPrice = this.total;
+
+  /** الثلاثة مع بعض كـ object */
+  readonly totals = computed<IBasketTotal>(() => ({
+    shipping: this.shipping(),
+    subtotal: this.subtotal(),
+    total: this.total(),
+  }));
 
   // ---------- Public API ----------
 
