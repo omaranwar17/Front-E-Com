@@ -76,11 +76,29 @@
     <div class="flex items-center gap-2 lg:gap-4">
       
       <!-- السلة -->
-      <div class="hidden lg:flex items-center gap-2 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-300">
+      <!-- <div class="hidden lg:flex items-center gap-2 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-300">
         <i class="fa-solid fa-cart-shopping text-xl text-gray-600 group-hover:text-indigo-600 transition-colors"></i>
         <span routerLink="/Carts" class="text-sm font-medium group-hover:text-indigo-600 transition-colors">{{ 'NAV.CART' | translate }} ({{ basket.itemCount() }})</span>
         <i class="fa-solid fa-chevron-down text-xs ml-1 text-gray-600 group-hover:text-indigo-600 transition-colors"></i>
-      </div>
+      </div> -->
+
+<a routerLink="/Carts" 
+   class="flex items-center gap-2 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-300">
+  
+  <!-- حاوية الأيقونة والرقم -->
+  <div class="relative flex items-center justify-center">
+    <!-- الأيقونة (شيلنا منها text-xl وخليها text-lg أو 2xl حسب الحجم اللي تحبه) -->
+    <i class="fa-solid fa-cart-shopping text-xl text-gray-600 group-hover:text-indigo-600 transition-colors"></i>
+    
+    <!-- الرقم (الـ Badge) -->
+    @if (basket.itemCount() > 0) {
+      <span class="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white shadow-sm">
+        {{ basket.itemCount() }}
+      </span>
+    }
+  </div>
+
+</a>
 
     <!-- الحساب -->
 <div class="relative ml-2 lg:ml-0">
@@ -151,7 +169,7 @@
       
       <ul class="flex flex-col gap-2 text-sm font-semibold border-b border-gray-200 pb-4">
         <li><a routerLink="/Home" class="block p-2 rounded-md hover:bg-gray-100 hover:text-indigo-600 transition-colors">{{ 'NAV.HOME' | translate }}</a></li>
-        <li><a routerLink="/Shopping" class="block p-2 rounded-md hover:bg-gray-100 hover:text-indigo-600 transition-colors">{{ 'NAV.SHOPPING' | translate }}</a></li>
+        <li><a routerLink="/products" class="block p-2 rounded-md hover:bg-gray-100 hover:text-indigo-600 transition-colors">{{ 'NAV.SHOPPING' | translate }}</a></li>
         <li><a routerLink="/About" class="block p-2 rounded-md hover:bg-gray-100 hover:text-indigo-600 transition-colors">{{ 'NAV.ABOUT' | translate }}</a></li>
         <li><a routerLink="/Best_Seller" class="block p-2 rounded-md hover:bg-gray-100 hover:text-indigo-600 transition-colors">{{ 'NAV.BEST_SELLER' | translate }}</a></li>
       </ul>
@@ -162,10 +180,12 @@
       </div>
 
       <div class="flex flex-col gap-3 pt-2">
-        <div class="flex items-center gap-3 cursor-pointer p-2 rounded-md hover:bg-gray-100 hover:text-indigo-600 transition-colors text-gray-700 font-medium">
+        <!-- <div class="flex items-center gap-3 cursor-pointer p-2 rounded-md hover:bg-gray-100 hover:text-indigo-600 transition-colors text-gray-700 font-medium">
           <i class="fa-solid fa-cart-shopping text-lg"></i>
           <span routerLink="/Carts">{{ 'NAV.CART' | translate }} ({{ basket.itemCount() }})</span>
-        </div>
+        </div> -->
+
+
       </div>
     </div>
   }

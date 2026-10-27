@@ -1,4 +1,4 @@
-import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, DEFAULT_CURRENCY_CODE, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -22,6 +22,7 @@ export const appConfig: ApplicationConfig = {
       progressBar: true,                // شريط التحميل أسفل الإشعار
       closeButton: true                 // زر إغلاق
     }),
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'EGP' },
  
     provideRouter(routes),
 

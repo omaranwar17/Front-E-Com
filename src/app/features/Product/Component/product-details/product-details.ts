@@ -1,11 +1,13 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { IProduct } from '../../../../shared/Interfases/IProduct';
 import { ProductService } from '../../Service/product-service';
+import { BasketService } from '../../../Carts/Service/BasketService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   imports: [RouterLink, TranslatePipe, CurrencyPipe],
@@ -17,7 +19,11 @@ export class ProductDetails implements OnInit {
 
   private _route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private translate = inject(TranslateService);
+   private toastr = inject(ToastrService);
   private destroyRef = inject(DestroyRef);
+  private readonly basket = inject(BasketService);
+private router = inject(Router);
 
   readonly imageBase = 'https://localhost:7020'; // ⚠️ انسخ القيمة الفعلية من ProductList
   readonly maxQuantity = 99;
@@ -69,13 +75,33 @@ export class ProductDetails implements OnInit {
     return `${base}/${name.replace(/^\/+/, '')}`;
   }
 
-  increase(): void {
-    this.quantity.update((q) => Math.min(q + 1, this.maxQuantity));
+ increase(): void {
+  if (this.quantity() >= this.maxQuantity) {
+    this.toastr.success(
+      this.translate.instant('Product.MAX_QTY', { max: this.maxQuantity })
+    );
+    return;
   }
+  this.quantity.update((q) => q + 1);
+  this.toastr.success(
+    this.translate.instant('Product.QTY_UPDATED', { qty: this.quantity() }),
+    '',
+    { timeOut: 1200 }
+  );
+}
 
-  decrease(): void {
-    this.quantity.update((q) => Math.max(q - 1, 1));
+decrease(): void {
+  if (this.quantity() <= 1) {
+    this.toastr.success(this.translate.instant('Product.MIN_QTY'));
+    return;
   }
+  this.quantity.update((q) => q - 1);
+  this.toastr.success(
+    this.translate.instant('Product.QTY_UPDATED', { qty: this.quantity() }),
+    '',
+    { timeOut: 1200 }
+  );
+}
 
   setQuantity(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -89,14 +115,35 @@ export class ProductDetails implements OnInit {
     this.wishlisted.update((v) => !v);
   }
 
-  addToCart(): void {
-    const p = this.product();
-    if (!p) return;
-    // TODO: اربطها بالـ cart service عندك، مثلًا: this.cartService.add(p.id, this.quantity());
-  }
+//    addToCart(product: IProduct): void {
+//   this.basket.addProduct(product).subscribe({
+//     next: () => this.toastr.success(product.name),
+//     error: (e) => {
+//       console.error('Add to cart failed', e.status, e.error);
+//       this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));
+//     },
+//   });
+// }
 
-  buyNow(): void {
-    this.addToCart();
-    // TODO: inject(Router) وبعدها: this.router.navigate(['/cart']);
-  }
+addToCart(product: IProduct): void {
+  // بنقرأ الكمية الحالية من الـ Signal
+  const selectedQty = this.quantity(); 
+
+  // بنبعتها للسيرفس
+  this.basket.addProduct(product, selectedQty).subscribe({
+    next: () => this.toastr.success(product.name),
+    error: (e) => {
+      console.error('Add to cart failed', e.status, e.error);
+      this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));
+    },
+  });
+}
+grtCheck()
+{
+this.router.navigate(['/Carts/Checkout']);
+}
+  
+   
+
+  
 }
