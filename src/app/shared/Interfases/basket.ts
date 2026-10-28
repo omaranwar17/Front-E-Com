@@ -10,6 +10,7 @@ export interface BasketItem {
   price: number
   qunatity: number
   category: string
+  size?: string | null;
 }
 
 export interface IBasketTotal {

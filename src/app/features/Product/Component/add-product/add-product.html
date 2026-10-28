@@ -92,6 +92,27 @@
       }
     </div>
 
+    <!-- ✅ Sizes (بيظهر بس لو الكاتيجوري HasSizes) -->
+    @if (showSizeField()) {
+      <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium text-gray-700">
+          {{ 'Product.SIZE' | translate }} <span class="text-red-500">*</span>
+        </label>
+        <div class="flex flex-wrap gap-4">
+          @for (s of sizes(); track s.id) {
+            <label class="inline-flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" 
+                     [value]="s.id" 
+                     [checked]="form.value.sizes?.includes(s.id)"
+                     (change)="onSizeToggle($event, s.id)" 
+                     class="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+              <span class="text-sm font-medium text-gray-700">{{ s.name }}</span>
+            </label>
+          }
+        </div>
+      </div>
+    }
+
     <!-- الصور -->
     <div>
       <span class="block mb-1.5 text-sm font-medium text-gray-700">{{ 'Admin.PHOTOS' | translate }}</span>

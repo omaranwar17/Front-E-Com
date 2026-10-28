@@ -16,16 +16,16 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './product-details.html',
 })
 export class ProductDetails implements OnInit {
-
   private _route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  selectedSize = signal<string | null>(null);
   private translate = inject(TranslateService);
-   private toastr = inject(ToastrService);
+  private toastr = inject(ToastrService);
   private destroyRef = inject(DestroyRef);
   private readonly basket = inject(BasketService);
-private router = inject(Router);
+  private router = inject(Router);
 
-  readonly imageBase = 'https://localhost:7020'; // ⚠️ انسخ القيمة الفعلية من ProductList
+  readonly imageBase = 'https://localhost:7020';
   readonly maxQuantity = 99;
 
   product = signal<IProduct | null>(null);
@@ -38,6 +38,13 @@ private router = inject(Router);
   photos = computed(() => this.product()?.photos?.map((p) => p.imageName) ?? []);
   mainPhoto = computed(() => this.selectedPhoto() ?? this.photos()[0] ?? null);
 
+  // ✅ الدالة الجديدة اللي بتفصل المقاسات
+  productSizes = computed(() => {
+    const p = this.product();
+    if (!p || !p.sizes) return [];
+    return p.sizes.split(',').map(s => s.trim()).filter(s => s);
+  });
+
   discount = computed(() => {
     const p = this.product();
     if (!p || !p.oldPrice || p.oldPrice <= p.newPrice) return 0;
@@ -46,8 +53,11 @@ private router = inject(Router);
 
   total = computed(() => (this.product()?.newPrice ?? 0) * this.quantity());
 
+  selectSize(size: string) {
+  this.selectedSize.set(size);
+}
+
   ngOnInit(): void {
-    // paramMap (مش snapshot) عشان لو الـ id اتغير والـ component اتعاد استخدامه
     this._route.paramMap
       .pipe(
         map((params) => Number(params.get('id'))),
@@ -75,75 +85,61 @@ private router = inject(Router);
     return `${base}/${name.replace(/^\/+/, '')}`;
   }
 
- increase(): void {
-  if (this.quantity() >= this.maxQuantity) {
-    this.toastr.success(
-      this.translate.instant('Product.MAX_QTY', { max: this.maxQuantity })
-    );
-    return;
+  increase(): void {
+    if (this.quantity() >= this.maxQuantity) {
+      this.toastr.info(
+        this.translate.instant('Product.MAX_QTY', { max: this.maxQuantity })
+      );
+      return;
+    }
+    this.quantity.update((q) => q + 1);
   }
-  this.quantity.update((q) => q + 1);
-  this.toastr.success(
-    this.translate.instant('Product.QTY_UPDATED', { qty: this.quantity() }),
-    '',
-    { timeOut: 1200 }
-  );
-}
 
-decrease(): void {
-  if (this.quantity() <= 1) {
-    this.toastr.success(this.translate.instant('Product.MIN_QTY'));
-    return;
+  decrease(): void {
+    if (this.quantity() <= 1) {
+      return;
+    }
+    this.quantity.update((q) => q - 1);
   }
-  this.quantity.update((q) => q - 1);
-  this.toastr.success(
-    this.translate.instant('Product.QTY_UPDATED', { qty: this.quantity() }),
-    '',
-    { timeOut: 1200 }
-  );
-}
 
   setQuantity(event: Event): void {
     const input = event.target as HTMLInputElement;
     const parsed = Math.floor(Number(input.value));
     const next = Number.isFinite(parsed) ? Math.min(Math.max(parsed, 1), this.maxQuantity) : 1;
     this.quantity.set(next);
-    input.value = String(next); // لو القيمة اتصلحت لنفس قيمة الـ signal، الـ DOM مش هيتحدّث لوحده
+    input.value = String(next);
   }
 
   toggleWishlist(): void {
     this.wishlisted.update((v) => !v);
   }
 
-//    addToCart(product: IProduct): void {
-//   this.basket.addProduct(product).subscribe({
-//     next: () => this.toastr.success(product.name),
-//     error: (e) => {
-//       console.error('Add to cart failed', e.status, e.error);
-//       this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));
-//     },
-//   });
-// }
-
 addToCart(product: any): void {
-  // بنقرأ الكمية الحالية من الـ Signal
-  const selectedQty = this.quantity(); 
+  // 1. لو المنتج ليه مقاسات والمستخدم مختارش، ننبهه ونوقف العملية
+  if (this.productSizes().length > 0 && !this.selectedSize()) {
+    this.toastr.warning('الرجاء اختيار المقاس أولاً', 'تنبيه');
+    return;
+  }
 
-  // بنبعتها للسيرفس
-  this.basket.addProduct(product, selectedQty).subscribe({
-    next: () => this.toastr.success(product.name),
+  const selectedQty = this.quantity(); 
+  
+  // ✅ 2. بنبعت المقاس في حقل منفصل، والاسم بنسيبه زي ما هو
+  const productToAdd = {
+    ...product,
+    size: this.selectedSize()
+  };
+
+  // 3. نبعته للسيرفس
+  this.basket.addProduct(productToAdd, selectedQty).subscribe({
+    next: () => this.toastr.success(productToAdd.name), // هيفضل T-Shirt
     error: (e) => {
       console.error('Add to cart failed', e.status, e.error);
       this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));
     },
   });
 }
-grtCheck()
-{
-this.router.navigate(['/Carts/Checkout']);
-}
-  
-   
 
-  
+  grtCheck() {
+    this.router.navigate(['/Carts/Checkout']);
+  }
 }

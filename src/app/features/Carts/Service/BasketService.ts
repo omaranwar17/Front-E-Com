@@ -11,6 +11,7 @@ export interface BasketProductSource {
   name: string;
   newPrice: number;
   categoryName: string;
+    size?: string | null;
   photos?: { imageName: string }[];
 }
 
@@ -85,65 +86,68 @@ export class BasketService {
   }
 
   /** مرّر IProduct مباشرة: بيتحول لـ BasketItem بالحقول الستة بس. */
-  addProduct(product: BasketProductSource, quantity = 1): Observable<Carts> {
-    return this.addItem(
-      {
-        id: product.id,
-        name: product.name,
-        image: product.photos?.[0]?.imageName || FALLBACK_IMAGE, // الـ API بيرفض الـ string الفاضي
-        price: product.newPrice,
-        category: product.categoryName || 'Uncategorized', // الـ API بيرفض الـ string الفاضي
-      },
-      quantity
-    );
+ addProduct(product: BasketProductSource, quantity = 1): Observable<Carts> {
+  return this.addItem(
+    {
+      id: product.id,
+      name: product.name,
+      image: product.photos?.[0]?.imageName || FALLBACK_IMAGE, 
+      price: product.newPrice,
+      category: product.categoryName || 'Uncategorized', 
+      size: product.size || null, // ✅ ضيف السطر ده عشان يتبعت
+    },
+    quantity
+  );
+}
+
+ addItem(item: NewBasketItem & { size?: string | null }, quantity = 1): Observable<Carts> {
+  if (!Number.isInteger(quantity) || quantity < 1) {
+    return throwError(() => new Error('Quantity must be a positive integer.'));
   }
 
-  addItem(item: NewBasketItem, quantity = 1): Observable<Carts> {
-    if (!Number.isInteger(quantity) || quantity < 1) {
-      return throwError(() => new Error('Quantity must be a positive integer.'));
-    }
+  const current = this.items();
+  
+  // ✅ 1. بنقارن بالـ id والـ size (عشان التيشيرت XS مختلف عن التيشيرت L)
+  const exists = current.some((i) => i.id === item.id && i.size === item.size);
 
-    const current = this.items();
-    const exists = current.some((i) => i.id === item.id);
-
-    const next: BasketItem[] = exists
-      ? current.map((i) =>
-          i.id === item.id ? { ...i, qunatity: i.qunatity + quantity } : i
-        )
-      : [
-          ...current,
-          {
-            // حقول صريحة بس، عشان أي حقل زيادة ما يتبعتش للـ API
-            id: item.id,
-            name: item.name,
-            image: item.image,
-            price: item.price,
-            category: item.category,
-            qunatity: quantity,
-          },
-        ];
-
-    return this.save(next);
-  }
-
-  incrementItem(itemId: number): Observable<Carts> {
-    return this.save(
-      this.items().map((i) =>
-        i.id === itemId ? { ...i, qunatity: i.qunatity + 1 } : i
+  const next: BasketItem[] = exists
+    ? current.map((i) =>
+        (i.id === item.id && i.size === item.size) 
+          ? { ...i, qunatity: i.qunatity + quantity } 
+          : i
       )
-    );
-  }
+    : [
+        ...current,
+        {
+          id: item.id,
+          name: item.name,
+          image: item.image,
+          price: item.price,
+          category: item.category,
+          qunatity: quantity,
+          size: item.size || null, // ✅ 2. بنحفظ المقاس هنا
+        },
+      ];
 
-  decrementItem(itemId: number): Observable<Carts> {
-    const next = this.items()
-      .map((i) => (i.id === itemId ? { ...i, qunatity: i.qunatity - 1 } : i))
-      .filter((i) => i.qunatity > 0);
-    return this.save(next);
-  }
+  return this.save(next);
+}
 
-  removeItem(itemId: number): Observable<Carts> {
-    return this.save(this.items().filter((i) => i.id !== itemId));
-  }
+ incrementItem(itemId: number, size: string | null | undefined): Observable<Carts> {
+  return this.save(
+    this.items().map((i) => (i.id === itemId && i.size === size) ? { ...i, qunatity: i.qunatity + 1 } : i)
+  );
+}
+
+decrementItem(itemId: number, size: string | null | undefined): Observable<Carts> {
+  const next = this.items()
+    .map((i) => (i.id === itemId && i.size === size) ? { ...i, qunatity: i.qunatity - 1 } : i)
+    .filter((i) => i.qunatity > 0);
+  return this.save(next);
+}
+
+removeItem(itemId: number, size: string | null | undefined): Observable<Carts> {
+  return this.save(this.items().filter((i) => !(i.id === itemId && i.size === size)));
+}
 
   clearBasket(): Observable<void> {
     const previous = this._basket();
