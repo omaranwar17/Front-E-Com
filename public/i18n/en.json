@@ -1,5 +1,6 @@
 
 {
+
   "NAV": {
     "HOME": "Home",
     "SHOPPING": "Shopping",
@@ -10,7 +11,8 @@
     "ACCOUNT": "Account",
     "REGISTER": "Register",
     "LOGIN": "Login",
-    "MY_ORDER": "My Order"
+    "MY_ORDER": "My Order",
+    "Logout":"Logout"
   },
    "Product": {
     "SORTING": "Sorting",
@@ -173,5 +175,122 @@
   "CHECK3": "Add items to your cart and review them anytime",
   "CONTACT_TITLE": "Have a question? Talk to us",
   "CONTACT_TEXT": "Message us on WhatsApp and we'll help you pick the right product."
+},
+"register": {
+  "title": "Create account",
+  "userName": "Username",
+  "displayName": "Display name",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm password",
+  "submit": "Sign up",
+  "submitting": "Signing up...",
+  "haveAccount": "Already have an account?",
+  "loginLink": "Log in",
+  "success": "Registered. Check your email to activate your account.",
+  "failed": "Something went wrong, please try again",
+  "errors": {
+    "userNameRequired": "Username is required",
+    "displayNameRequired": "Display name is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Enter a valid email",
+    "passwordRequired": "Password is required",
+    "minlength": "Must be at least {{min}} characters",
+    "mismatch": "Passwords do not match"
+  },
+  "subtitle": "Get started in less than a minute",
+"show": "Show password",
+"hide": "Hide password",
+"strength": {
+  "weak": "Weak",
+  "medium": "Medium",
+  "strong": "Strong"
+},
+"brand": {
+  "title": "Shop with confidence, track with ease",
+  "subtitle": "Create your account and enjoy a fast, secure shopping experience.",
+  "f1": "Fast delivery to your door",
+  "f2": "Secure, protected payments",
+  "f3": "Easy returns and exchanges"
+}
+},
+"login": {
+  "title": "Welcome back",
+  "subtitle": "Log in to continue shopping",
+  "email": "Email",
+  "password": "Password",
+  "show": "Show password",
+  "forgotPassword": "Forgot password?",
+  "hide": "Hide password",
+  "submit": "Log in",
+  "submitting": "Logging in...",
+  "noAccount": "Don't have an account?",
+  "registerLink": "Create an account",
+  "success": "Logged in successfully",
+  "failed": "Something went wrong, please try again",
+  "errors": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Enter a valid email",
+    "passwordRequired": "Password is required"
+  },
+  "brand": {
+    "title": "Good to see you, pick up where you left off",
+    "subtitle": "Your orders, cart and details, all in one place.",
+    "f1": "Track your orders in real time",
+    "f2": "Your cart is saved for you",
+    "f3": "Secure, protected payments"
+  }
+},
+"forgot": {
+  "title": "Forgot password?",
+  "subtitle": "Enter your email and we'll send you a reset link.",
+  "email": "Email",
+  "submit": "Send reset link",
+  "sending": "Sending...",
+  "backToLogin": "Back to login",
+  "sentTitle": "Check your email",
+  "checkEmail": "If the email is registered, a reset link has been sent. Check your inbox and spam folder.",
+  "errors": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Enter a valid email",
+    "network": "Cannot reach the server",
+    "generic": "Something went wrong, please try again"
+  }
+},
+"reset": {
+  "title": "Reset password",
+  "subtitle": "Choose a new password for your account.",
+  "newPassword": "New password",
+  "confirmPassword": "Confirm password",
+  "submit": "Reset password",
+  "saving": "Saving...",
+  "invalidTitle": "Invalid link",
+  "invalidLink": "This reset link is invalid or incomplete.",
+  "requestNew": "Request a new link",
+  "doneTitle": "Password changed",
+  "doneText": "Your password has been updated. You can now log in with the new password.",
+  "goToLogin": "Go to login",
+  "errors": {
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 6 characters",
+    "confirmRequired": "Please confirm your password",
+    "mismatch": "Passwords do not match",
+    "network": "Cannot reach the server",
+    "generic": "Reset failed, please try again"
+  }
+},
+"confirm": {
+  "loadingTitle": "Confirming your email",
+  "loadingText": "Please wait a moment...",
+  "successTitle": "Email confirmed",
+  "successText": "Your account is ready. You can now log in.",
+  "errorTitle": "Confirmation failed",
+  "goToLogin": "Go to login",
+  "backToLogin": "Back to login",
+  "errors": {
+    "invalidLink": "This confirmation link is invalid or incomplete.",
+    "network": "Cannot reach the server",
+    "generic": "Confirmation failed, please try again"
+  }
 }
 }
