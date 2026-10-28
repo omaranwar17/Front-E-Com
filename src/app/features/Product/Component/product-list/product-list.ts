@@ -122,7 +122,7 @@ onEscape(): void {
     return Math.round((1 - product.newPrice / product.oldPrice) * 100);
   }
 
-  addToCart(product: IProduct): void {
+  addToCart(product: any): void {
   this.basket.addProduct(product).subscribe({
     next: () => this.toastr.success(product.name),
     error: (e) => {

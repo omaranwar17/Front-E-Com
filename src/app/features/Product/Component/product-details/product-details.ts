@@ -125,7 +125,7 @@ decrease(): void {
 //   });
 // }
 
-addToCart(product: IProduct): void {
+addToCart(product: any): void {
   // بنقرأ الكمية الحالية من الـ Signal
   const selectedQty = this.quantity(); 
 

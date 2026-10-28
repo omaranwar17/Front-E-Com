@@ -15,13 +15,16 @@ export interface BasketProductSource {
 }
 
 const FALLBACK_IMAGE = 'assets/placeholder.png'; // غيّرها لصورة موجودة عندك
+const LEGACY_STORAGE_KEY = 'basket_id';
+// السيرفر بيستبدل الـ id بالـ key المبني على اليوزر، فالقيمة هنا شكلية
+const PLACEHOLDER_ID = 'pending';
 
 @Service()
 export class BasketService {
   private readonly http = inject(HttpClient);
 
+  // السيرفر بيحدد السلة من التوكن، فمفيش id في الـ URL
   private readonly baseUrl = 'https://localhost:7020/api/Basket';
-  private readonly storageKey = 'basket_id';
 
   private readonly FREE_SHIPPING_THRESHOLD = 30000;
   private readonly SHIPPING_FEE = 50; // غيّرها لرسوم الشحن الحقيقية
@@ -57,14 +60,28 @@ export class BasketService {
     total: this.total(),
   }));
 
+  constructor() {
+    // تنظيف الـ id القديم اللي كان متخزن قبل ربط السلة باليوزر
+    try {
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+    } catch {
+      /* التخزين مش متاح، مفيش مشكلة */
+    }
+  }
+
   // ---------- Public API ----------
 
+  /** بيحمّل سلة اليوزر الحالي. بيرجّع 401 لو مش عامل login. */
   loadBasket(): Observable<Carts> {
-    const id = this.getBasketId();
-    return this.http.get<Carts>(`${this.baseUrl}/${id}`).pipe(
-      map((basket) => this.normalize(basket, id)),
+    return this.http.get<Carts>(this.baseUrl).pipe(
+      map((basket) => this.normalize(basket)),
       tap((basket) => this._basket.set(basket))
     );
+  }
+
+  /** بيفضّي السلة محلياً بس (عند الـ logout). مبيمسحش حاجة من السيرفر. */
+  reset(): void {
+    this._basket.set(null);
   }
 
   /** مرّر IProduct مباشرة: بيتحول لـ BasketItem بالحقول الستة بس. */
@@ -129,12 +146,11 @@ export class BasketService {
   }
 
   clearBasket(): Observable<void> {
-    const id = this.getBasketId();
     const previous = this._basket();
 
-    this._basket.set({ id, basketItems: [] });
+    this._basket.set({ id: previous?.id || PLACEHOLDER_ID, basketItems: [] });
 
-    return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(
+    return this.http.delete<void>(this.baseUrl).pipe(
       catchError((err: HttpErrorResponse) => {
         if (err.status === 404) return of(void 0);
         this._basket.set(previous);
@@ -146,9 +162,8 @@ export class BasketService {
   // ---------- Internals ----------
 
   private save(basketItems: BasketItem[]): Observable<Carts> {
-    const id = this.getBasketId();
     const previous = this._basket();
-    const payload: Carts = { id, basketItems };
+    const payload: Carts = { id: previous?.id || PLACEHOLDER_ID, basketItems };
 
     this._basket.set(payload);
 
@@ -161,20 +176,7 @@ export class BasketService {
     );
   }
 
-  private normalize(basket: Carts | null, id: string): Carts {
-    return { id: basket?.id || id, basketItems: basket?.basketItems ?? [] };
-  }
-
-  private getBasketId(): string {
-    try {
-      let id = localStorage.getItem(this.storageKey);
-      if (!id) {
-        id = crypto.randomUUID();
-        localStorage.setItem(this.storageKey, id);
-      }
-      return id;
-    } catch {
-      return this._basket()?.id ?? crypto.randomUUID();
-    }
+  private normalize(basket: Carts | null): Carts {
+    return { id: basket?.id || PLACEHOLDER_ID, basketItems: basket?.basketItems ?? [] };
   }
 }
