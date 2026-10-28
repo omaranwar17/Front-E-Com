@@ -2,26 +2,28 @@
 
 
  <!-- @if (isAdmin) { -->
-    <div class="bg-white p-4 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-      <a  routerLink="/products/addProduct"
-         class="group w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white
-                transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200">
-        <svg class="h-5 w-5 group-hover:rotate-90 transition-transform" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M10 4v12M4 10h12" />
-        </svg>
-        <span>{{ 'Admin.ADD_PRODUCT' | translate }}</span>
-      </a>
+ @if (auth.isAdmin()) {
+  <div class="bg-white p-4 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+    <a routerLink="/products/addProduct"
+       class="group w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white
+              transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200">
+      <svg class="h-5 w-5 group-hover:rotate-90 transition-transform" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M10 4v12M4 10h12" />
+      </svg>
+      <span>{{ 'Admin.ADD_PRODUCT' | translate }}</span>
+    </a>
 
-        <a routerLink="/products/addCategory"
-         class="group my-4 w-full flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-3 text-sm font-bold text-indigo-600
-                transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-50 hover:shadow-md
-                focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100">
-        <svg class="h-5 w-5 group-hover:rotate-90 transition-transform" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M10 4v12M4 10h12" />
-        </svg>
-        <span>{{ 'Admin.ADD_CATEGORY' | translate }}</span>
-      </a>
-    </div>
+    <a routerLink="/products/addCategory"
+       class="group my-4 w-full flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-3 text-sm font-bold text-indigo-600
+              transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-50 hover:shadow-md
+              focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100">
+      <svg class="h-5 w-5 group-hover:rotate-90 transition-transform" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M10 4v12M4 10h12" />
+      </svg>
+      <span>{{ 'Admin.ADD_CATEGORY' | translate }}</span>
+    </a>
+  </div>
+}
   <!-- } -->
 
   <!-- Sorting -->
@@ -150,51 +152,54 @@
       </svg>
     </button>
 
-    <!-- Kebab (ظاهر دايمًا) -->
-    <button type="button"
-            (click)="toggleMenu(cat.id, $event)"
-            [attr.aria-label]="'CATEGORY.ACTIONS' | translate"
-            aria-haspopup="menu"
-            [attr.aria-expanded]="openMenuId() === cat.id"
-            class="absolute end-2 top-1/2 -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-lg
-                   text-gray-400 transition-colors hover:bg-indigo-100 hover:text-indigo-600
-                   focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100"
-            [class.bg-indigo-100]="openMenuId() === cat.id"
-            [class.text-indigo-600]="openMenuId() === cat.id">
-      <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-        <circle cx="10" cy="4" r="1.6" />
-        <circle cx="10" cy="10" r="1.6" />
-        <circle cx="10" cy="16" r="1.6" />
-      </svg>
-    </button>
+  @if (auth.isAdmin()) {
 
-    <!-- Dropdown -->
-    @if (openMenuId() === cat.id) {
-      <div role="menu"
-           class="absolute end-2 top-full z-30 mt-1 w-40 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
-        <a role="menuitem"
-           [routerLink]="['/products/editCategory', cat.id]"
-           class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition-colors
-                  hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus-visible:bg-indigo-50">
-          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M13.5 3.5l3 3L7 16H4v-3l9.5-9.5z" />
-          </svg>
-          {{ 'Admin.EDIT' | translate }}
-        </a>
+  <!-- Kebab -->
+  <button type="button"
+          (click)="toggleMenu(cat.id, $event)"
+          [attr.aria-label]="'CATEGORY.ACTIONS' | translate"
+          aria-haspopup="menu"
+          [attr.aria-expanded]="openMenuId() === cat.id"
+          class="absolute end-2 top-1/2 -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-lg
+                 text-gray-400 transition-colors hover:bg-indigo-100 hover:text-indigo-600
+                 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100"
+          [class.bg-indigo-100]="openMenuId() === cat.id"
+          [class.text-indigo-600]="openMenuId() === cat.id">
+    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <circle cx="10" cy="4" r="1.6" />
+      <circle cx="10" cy="10" r="1.6" />
+      <circle cx="10" cy="16" r="1.6" />
+    </svg>
+  </button>
 
-        <button type="button" role="menuitem"
-                (click)="askDelete(cat)"
-                class="flex w-full items-center gap-2 px-3 py-2 text-start text-sm text-red-600 transition-colors
-                       hover:bg-red-50 focus:outline-none focus-visible:bg-red-50">
-          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10" />
-          </svg>
-          {{ 'COMMON.DELETE' | translate }}
-        </button>
-      </div>
-    }
+  <!-- Dropdown -->
+  @if (openMenuId() === cat.id) {
+    <div role="menu"
+         class="absolute end-2 top-full z-30 mt-1 w-40 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
+      <a role="menuitem"
+         [routerLink]="['/products/editCategory', cat.id]"
+         class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition-colors
+                hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus-visible:bg-indigo-50">
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M13.5 3.5l3 3L7 16H4v-3l9.5-9.5z" />
+        </svg>
+        {{ 'Admin.EDIT' | translate }}
+      </a>
+
+      <button type="button" role="menuitem"
+              (click)="askDelete(cat)"
+              class="flex w-full items-center gap-2 px-3 py-2 text-start text-sm text-red-600 transition-colors
+                     hover:bg-red-50 focus:outline-none focus-visible:bg-red-50">
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10" />
+        </svg>
+        {{ 'COMMON.DELETE' | translate }}
+      </button>
+    </div>
+  }
+}
   </li>
 } @empty {
   <li class="text-gray-400 text-center py-2 text-sm">No categories found</li>

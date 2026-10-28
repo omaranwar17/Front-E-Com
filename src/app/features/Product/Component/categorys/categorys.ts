@@ -9,6 +9,7 @@ import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../Service/category-service';
 import { ToastrService } from 'ngx-toastr';
+import { Auth } from '../../../Auth/Services/auth';
 
 @Component({
   imports: [TranslatePipe, CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
@@ -21,6 +22,7 @@ export class Categorys implements OnInit {
   @Output() searchChanged = new EventEmitter<string>();
   @Output() categorySelected = new EventEmitter<number | null>();
    private translate = inject(TranslateService);
+   auth = inject(Auth);
 
   searchControl = new FormControl('');
   categories = signal<any[]>([]);

@@ -7,6 +7,7 @@ import { Route, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../Service/product-service';
 import { ToastrService } from 'ngx-toastr';
 import { BasketService } from '../../../Carts/Service/BasketService';
+import { Auth } from '../../../Auth/Services/auth';
 
 @Component({
   imports: [CommonModule, TranslatePipe, RouterLink],
@@ -19,6 +20,7 @@ export class ProductList {
   @Input() total = 0;
   constructor(private _router:Router){}
     private toastr = inject(ToastrService);
+    auth = inject(Auth);
   @Output() deleted = new EventEmitter<void>();
   productToDelete = signal<IProduct | null>(null);
 deleting = signal(false);

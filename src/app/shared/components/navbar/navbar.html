@@ -114,26 +114,37 @@
 
  <!-- القائمة المنسدلة للحساب -->
 @if (isAccountMenuOpen()) {
-  <!-- صغرنا العرض لـ w-32، وخفينا البادينج شوية -->
   <div class="absolute right-0 mt-2 w-32 bg-[#1f1f1f] rounded-md shadow-xl py-1 z-50 border border-gray-700">
-    
-    <!-- Register -->
-    <a href="#" class="flex items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
-      <i class="fa-solid fa-user-plus text-gray-400 text-sm w-4"></i>
-     <span routerLink="/Register">{{ 'NAV.REGISTER' | translate }}</span>
-    </a>
 
-    <!-- Login -->
-    <a href="#" class="flex items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
-      <i class="fa-solid fa-arrow-right-to-bracket text-gray-400 text-sm w-4"></i>
-      <span routerLink="/Login">{{ 'NAV.LOGIN' | translate }}</span>
-    </a>
+    @if (auth.isLoggedIn()) {
+      <!-- My Order -->
+      <a routerLink="/MY_ORDER" (click)="isAccountMenuOpen.set(false)"
+         class="flex items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
+        <i class="fa-solid fa-list text-gray-400 text-sm w-4"></i>
+        <span>{{ 'NAV.MY_ORDER' | translate }}</span>
+      </a>
 
-    <!-- My Order -->
-    <a href="#" class="flex items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
-      <i class="fa-solid fa-list text-gray-400 text-sm w-4"></i>
-      <span routerLink="/MY_ORDER">{{ 'NAV.MY_ORDER' | translate }}</span>
-    </a>
+      <!-- Logout -->
+      <button type="button" (click)="logout()"
+              class="flex w-full items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
+        <i class="fa-solid fa-arrow-right-from-bracket text-gray-400 text-sm w-4"></i>
+        <span>{{ 'NAV.Logout' | translate }}</span>
+      </button>
+    } @else {
+      <!-- Register -->
+      <a routerLink="/Register" (click)="isAccountMenuOpen.set(false)"
+         class="flex items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
+        <i class="fa-solid fa-user-plus text-gray-400 text-sm w-4"></i>
+        <span>{{ 'NAV.REGISTER' | translate }}</span>
+      </a>
+
+      <!-- Login -->
+      <a routerLink="/Login" (click)="isAccountMenuOpen.set(false)"
+         class="flex items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
+        <i class="fa-solid fa-arrow-right-to-bracket text-gray-400 text-sm w-4"></i>
+        <span>{{ 'NAV.LOGIN' | translate }}</span>
+      </a>
+    }
 
   </div>
 }
