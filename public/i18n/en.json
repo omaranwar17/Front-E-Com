@@ -44,6 +44,7 @@
   },
   "Admin": {
   "ADD_PRODUCT": "Add Product",
+   "CATEGORY_HAS_SIZES": "This category has sizes (e.g., clothes)",
     "CATEGORY_NAME": "Category name",
     "CATEGORY_NAME_PLACEHOLDER": "e.g. Electronics",
     "CATEGORY_DESCRIPTION": "Description (optional)",
@@ -109,7 +110,7 @@
     "YOU_SAVE": "You save",
     "ADD_TO_CART": "Add to Cart",
     "NOT_FOUND": "Product not found",
-
+"SIZE": "Size",
   "OFF": "off",
   "QUANTITY": "Quantity",
   "TOTAL": "Total",

@@ -37,6 +37,7 @@ export class AddCategory implements OnInit {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(/\S/), Validators.maxLength(100)]],
       description: ['', [Validators.maxLength(500)]],
+       hasSizes: [false] // <--- ضيف دي (القيمة الافتراضية false)
     });
   }
   langService = inject(LanguageService);
@@ -70,6 +71,7 @@ export class AddCategory implements OnInit {
         this.form.patchValue({
           name: category.name,
           description: category.description ?? '',
+           hasSizes: category.hasSizes ?? false 
         });
         this.form.enable();
         this.formLocked.set(false);
@@ -125,10 +127,11 @@ export class AddCategory implements OnInit {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    const { name, description } = this.form.getRawValue();
+    const { name, description , hasSizes } = this.form.getRawValue();
     const dto = {
       name: (name as string).trim(),
       description: ((description as string | null) ?? '').trim(), 
+       hasSizes: !!hasSizes
     };
 
     const request$ = this.isEdit

@@ -6,10 +6,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { loaderInterceptor } from './shared/interceptor/loader-interceptor';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
-import { catchError, firstValueFrom, of } from 'rxjs';
-import { BasketService } from './features/Carts/Service/BasketService';
 import { credentialsInterceptor } from './shared/interceptor/credentials-interceptor';
 import { Auth } from './features/Auth/Services/auth';
 
@@ -29,14 +26,8 @@ export const appConfig: ApplicationConfig = {
 
     provideHttpClient(withInterceptors([loaderInterceptor, credentialsInterceptor])),
 
-    // ✅ جديد: تحميل بيانات اليوزر (ودوره) عند فتح الموقع
+    // يحمّل اليوزر وسلته قبل عرض الموقع
     provideAppInitializer(() => inject(Auth).load()),
-
-    provideAppInitializer(() =>
-      firstValueFrom(
-        inject(BasketService).loadBasket().pipe(catchError(() => of(null)))
-      )
-    ),
 
     provideTranslateService({
       loader: provideTranslateHttpLoader({

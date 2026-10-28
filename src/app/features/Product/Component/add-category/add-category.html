@@ -56,6 +56,18 @@
       <p class="mt-1 text-end text-xs text-gray-400">{{ description.value?.length ?? 0 }}/500</p>
     </div>
 
+   
+
+    <!-- ✅ هل الفئة لها مقاسات؟ -->
+    <div class="flex items-center gap-3 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
+      <input id="hasSizes" type="checkbox" formControlName="hasSizes"
+             class="w-5 h-5 text-indigo-600 bg-white border-gray-300 rounded focus:ring-indigo-500 focus:ring-2 cursor-pointer">
+      <label for="hasSizes" class="text-sm font-medium text-gray-700 cursor-pointer select-none">
+        {{ 'Admin.CATEGORY_HAS_SIZES' | translate }} 
+        <!-- أو استخدم النص المباشر: هل هذه الفئة تحتوي على مقاسات (مثل الملابس)؟ -->
+      </label>
+    </div>
+
        <!-- الرسايل -->
     @if (successMessage()) {
       <div class="msg-in flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-medium text-indigo-700" role="status">
