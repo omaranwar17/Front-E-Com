@@ -306,6 +306,9 @@
   "NOTES": "ملاحظات (اختياري)",
   "ERR_REQUIRED": "هذا الحقل مطلوب",
   "ERR_PHONE": "رقم موبايل مصري غير صحيح (مثال: 01012345678)",
+  "TRACK_ORDER": "تتبع طلبي",
+  "MY_ORDERS": "تصفح طلباتي",
+  
 
   "PAYMENT_TITLE": "طريقة الدفع",
   "METHOD_CashOnDelivery": "الدفع عند الاستلام",
@@ -370,6 +373,30 @@
   "STATUS_Delivered": "تم التسليم",
   "STATUS_Cancelled": "ملغي",
   "STATUS_Rejected": "مرفوض"
-}
+},
+  "ORDER_DETAILS": {
+    "TITLE": "تفاصيل الطلب",
+    "BACK_TO_ORDERS": "رجوع لطلباتي",
+    "LOADING": "جاري تحميل تفاصيل الطلب...",
+    "ORDER_NUMBER": "رقم الطلب",
+    "DATE": "التاريخ",
+    "PAYMENT_METHOD": "طريقة الدفع",
+    "SHIPPING_ADDRESS": "عنوان الشحن",
+    "NOTES": "ملاحظات",
+    "PRODUCTS": "المنتجات",
+    "SIZE": "مقاس",
+    "QUANTITY": "الكمية",
+    "SUBTOTAL": "المجموع الفرعي",
+    "SHIPPING_FEE": "الشحن",
+    "TOTAL": "الإجمالي"
+  },
+  "ORDER_STATUS": {
+    "Pending": "قيد الانتظار",
+    "Confirmed": "تم التأكيد",
+    "Shipped": "تم الشحن",
+    "Delivered": "تم التوصيل",
+    "Cancelled": "ملغي",
+    "AwaitingPaymentReview": "قيد مراجعة الدفع"
+  }
 
 }

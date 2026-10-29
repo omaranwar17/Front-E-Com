@@ -14,6 +14,7 @@ import { Auth } from '../../../features/Auth/Services/auth';
 })
 export class Navbar {
 
+
     isMobileMenuOpen = signal(false);
       isLangMenuOpen = signal(false); 
        isAccountMenuOpen = signal(false); 
