@@ -319,6 +319,8 @@
   "AWAITING_REVIEW": "We'll verify your transfer and confirm your order shortly.",
   "ERR_NETWORK": "Couldn't reach the server. Check your connection and try again.",
   "ERR_UNAUTHORIZED": "Your session expired. Please sign in and try again.",
+    "TRACK_ORDER": "Track My Order",
+  "MY_ORDERS": "My Orders",
 
   "TOTAL": "Total",
   "CONFIRM": "Place order",
@@ -369,5 +371,29 @@
   "STATUS_Delivered": "Delivered",
   "STATUS_Cancelled": "Cancelled",
   "STATUS_Rejected": "Rejected"
-}
+},
+  "ORDER_DETAILS": {
+    "TITLE": "Order Details",
+    "BACK_TO_ORDERS": "Back to My Orders",
+    "LOADING": "Loading order details...",
+    "ORDER_NUMBER": "Order Number",
+    "DATE": "Date",
+    "PAYMENT_METHOD": "Payment Method",
+    "SHIPPING_ADDRESS": "Shipping Address",
+    "NOTES": "Notes",
+    "PRODUCTS": "Products",
+    "SIZE": "Size",
+    "QUANTITY": "Qty",
+    "SUBTOTAL": "Subtotal",
+    "SHIPPING_FEE": "Shipping",
+    "TOTAL": "Total"
+  },
+  "ORDER_STATUS": {
+    "Pending": "Pending",
+    "Confirmed": "Confirmed",
+    "Shipped": "Shipped",
+    "Delivered": "Delivered",
+    "Cancelled": "Cancelled",
+    "AwaitingPaymentReview": "Awaiting Payment Review"
+  }
 }

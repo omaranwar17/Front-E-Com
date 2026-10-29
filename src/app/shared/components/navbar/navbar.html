@@ -124,6 +124,14 @@
         <span>{{ 'NAV.MY_ORDER' | translate }}</span>
       </a>
 
+      @if (auth.isAdmin()) {
+         <a routerLink="Admin/Orders" (click)="isAccountMenuOpen.set(false)"
+         class="flex items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
+        <i class="fa-solid fa-list text-gray-400 text-sm w-4"></i>
+        <span>{{ 'ADMIN_ORDERS.TITLE' | translate }}</span>
+      </a>
+    }
+
       <!-- Logout -->
       <button type="button" (click)="logout()"
               class="flex w-full items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">

@@ -62,6 +62,15 @@ export const routes: Routes = [
       import('./features/Carts/Component/admin-orders/admin-orders').then((m) => m.AdminOrders),
     canActivate: [authGuard, authGuard],
   },
+
+  {
+    path: 'orders/:id',
+    loadComponent: () =>
+      import('./features/Carts/Component/order-details-component/order-details-component').then((m) => m.OrderDetailsComponent),
+    canActivate: [authGuard, authGuard],
+  },
+
+ 
   
   {
     path: '**',

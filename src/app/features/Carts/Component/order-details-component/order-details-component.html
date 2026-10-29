@@ -1,0 +1,111 @@
+<section class="mx-auto max-w-2xl px-4 py-8">
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">{{ 'ORDER_DETAILS.TITLE' | translate }}</h1>
+    <a routerLink="/Carts/MyOrders" class="text-sm text-indigo-600 hover:underline">
+      ← {{ 'ORDER_DETAILS.BACK_TO_ORDERS' | translate }}
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="rounded-xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+      <p class="text-gray-500">{{ 'ORDER_DETAILS.LOADING' | translate }}</p>
+    </div>
+  } @else if (error()) {
+    <div class="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+      <p class="text-red-700">{{ error() }}</p>
+    </div>
+  } @else if (order(); as o) {
+    <div class="space-y-6">
+
+      <!-- رأس الطلب -->
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-sm text-gray-500">{{ 'ORDER_DETAILS.ORDER_NUMBER' | translate }}</p>
+            <p class="text-xl font-bold text-gray-900">#{{ o.id }}</p>
+          </div>
+          <span class="rounded-full px-3 py-1 text-xs font-semibold {{ statusClass(o.status) }}">
+            {{ 'ORDER_STATUS.' + o.status | translate }}
+          </span>
+        </div>
+
+        <div class="mt-4 grid gap-3 text-sm text-gray-600 sm:grid-cols-2">
+          <p>
+            <span class="font-medium text-gray-800">{{ 'ORDER_DETAILS.DATE' | translate }}:</span>
+            {{ o.orderDate | date:'medium' }}
+          </p>
+          <p>
+            <span class="font-medium text-gray-800">{{ 'ORDER_DETAILS.PAYMENT_METHOD' | translate }}:</span>
+            {{ 'CHECKOUT.METHOD_' + o.paymentMethod | translate }}
+          </p>
+        </div>
+      </div>
+
+      <!-- عنوان الشحن -->
+      @if (o.shippingAddress) {
+        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 class="mb-3 text-lg font-semibold text-gray-900">{{ 'ORDER_DETAILS.SHIPPING_ADDRESS' | translate }}</h2>
+          <div class="space-y-1 text-sm text-gray-700">
+            <p class="font-medium">{{ o.shippingAddress.fullName }}</p>
+            <p dir="ltr" class="text-gray-600">{{ o.shippingAddress.phone }}</p>
+            <p>
+              {{ o.shippingAddress.governorate }} - {{ o.shippingAddress.city }}
+            </p>
+            <p>{{ o.shippingAddress.street }}</p>
+            @if (o.shippingAddress.notes) {
+              <p class="mt-2 text-gray-500">
+                {{ 'ORDER_DETAILS.NOTES' | translate }}: {{ o.shippingAddress.notes }}
+              </p>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- العناصر -->
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ 'ORDER_DETAILS.PRODUCTS' | translate }}</h2>
+        <ul class="divide-y divide-gray-100">
+          @for (item of o.items; track item.productId + '-' + item.size) {
+            <li class="flex items-center justify-between py-3 text-sm">
+              <div class="flex items-center gap-3">
+                @if (item.pictureUrl) {
+                  <img [src]="getImageUrl(item.pictureUrl)" [alt]="item.productName"
+                       class="h-12 w-12 rounded-lg object-cover" />
+                }
+                <div>
+                  <p class="font-medium text-gray-900">{{ item.productName }}</p>
+                  <p class="text-gray-500">
+                    @if (item.size) { {{ 'ORDER_DETAILS.SIZE' | translate }}: {{ item.size }} · }
+                    {{ 'ORDER_DETAILS.QUANTITY' | translate }}: {{ item.quantity }}
+                  </p>
+                </div>
+              </div>
+              <span class="font-medium text-gray-900">
+                {{ item.unitPrice * item.quantity | currency }}
+              </span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- الإجمالي -->
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between text-gray-600">
+            <span>{{ 'ORDER_DETAILS.SUBTOTAL' | translate }}</span>
+            <span>{{ o.subtotal | currency }}</span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>{{ 'ORDER_DETAILS.SHIPPING_FEE' | translate }}</span>
+            <span>{{ o.shippingFee | currency }}</span>
+          </div>
+          <div class="flex justify-between border-t pt-3 text-lg font-bold text-gray-900">
+            <span>{{ 'ORDER_DETAILS.TOTAL' | translate }}</span>
+            <span>{{ o.total | currency }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  }
+</section>
