@@ -293,5 +293,38 @@
     "network": "Cannot reach the server",
     "generic": "Confirmation failed, please try again"
   }
+},
+"CHECKOUT": {
+  "TITLE": "Checkout",
+  "SHIPPING_TITLE": "Shipping address",
+  "FULL_NAME": "Full name",
+  "PHONE": "Mobile number",
+  "GOVERNORATE": "Governorate",
+  "CITY": "City",
+  "STREET": "Street address",
+  "NOTES": "Notes (optional)",
+  "ERR_REQUIRED": "This field is required",
+  "ERR_PHONE": "Invalid Egyptian mobile number (e.g. 01012345678)",
+
+  "PAYMENT_TITLE": "Payment method",
+  "METHOD_CashOnDelivery": "Cash on delivery",
+  "METHOD_InstaPay": "InstaPay",
+  "METHOD_VodafoneCash": "Vodafone Cash",
+  "TRANSFER_TO": "Please transfer:",
+  "VODAFONE_NUMBER": "Wallet number",
+  "INSTAPAY_ADDRESS": "InstaPay address",
+  "ACCOUNT_HOLDER": "Account holder",
+  "REFERENCE": "Transaction reference (after transfer)",
+  "ERR_REFERENCE": "Transaction reference is required",
+  "AWAITING_REVIEW": "We'll verify your transfer and confirm your order shortly.",
+  "ERR_NETWORK": "Couldn't reach the server. Check your connection and try again.",
+  "ERR_UNAUTHORIZED": "Your session expired. Please sign in and try again.",
+
+  "TOTAL": "Total",
+  "CONFIRM": "Place order",
+  "CONFIRMING": "Placing order...",
+  "ORDER_SAVED": "Order #{{ id }} placed ✅",
+  "CONTINUE": "Continue shopping",
+  "ERROR_GENERIC": "Something went wrong, please try again."
 }
 }
