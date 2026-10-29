@@ -56,6 +56,12 @@ export const routes: Routes = [
   component: ResetPassword
 },
 
+{
+    path: 'Admin/Orders',
+    loadComponent: () =>
+      import('./features/Carts/Component/admin-orders/admin-orders').then((m) => m.AdminOrders),
+    canActivate: [authGuard, authGuard],
+  },
   
   {
     path: '**',

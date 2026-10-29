@@ -118,7 +118,7 @@
 
     @if (auth.isLoggedIn()) {
       <!-- My Order -->
-      <a routerLink="/MY_ORDER" (click)="isAccountMenuOpen.set(false)"
+      <a routerLink="/Carts/MyOrders" (click)="isAccountMenuOpen.set(false)"
          class="flex items-center justify-start gap-2 px-3 py-2 text-xs text-gray-200 hover:bg-gray-700 transition-colors">
         <i class="fa-solid fa-list text-gray-400 text-sm w-4"></i>
         <span>{{ 'NAV.MY_ORDER' | translate }}</span>

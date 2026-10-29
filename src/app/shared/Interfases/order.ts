@@ -42,3 +42,23 @@ export interface Order {
   shippingFee: number;
   total: number;
 }
+
+export type OrderStatus =
+  | 'Pending'
+  | 'AwaitingPaymentReview'
+  | 'Confirmed'
+  | 'Shipped'
+  | 'Delivered'
+  | 'Cancelled'
+  | 'Rejected';
+
+/** الصف في قايمة الأدمن (يطابق AdminOrderListItemDto في الـ backend) */
+export interface AdminOrderListItem {
+  id: number;
+  orderDate: string;
+  buyerEmail: string;
+  status: OrderStatus;
+  paymentMethod: string;
+  paymentReference: string | null;
+  total: number;
+}
