@@ -139,44 +139,7 @@
   "SHIPPING": "Shipping",
   "FREE": "Free"
 },
-"HOME": {
-  "CTA": "Shop now",
-  "WHATSAPP": "Talk to us",
-  "EXPLORE": "Explore",
-  "SLIDE1_TAG": "Fashion",
-  "SLIDE1_TITLE": "Style that fits every day",
-  "SLIDE1_TEXT": "Discover clothes for every season and every occasion.",
-  "SLIDE2_TAG": "Perfumes",
-  "SLIDE2_TITLE": "Find your signature scent",
-  "SLIDE2_TEXT": "Fragrances for him and her, from fresh to rich and warm.",
-  "SLIDE3_TAG": "Electronics",
-  "SLIDE3_TITLE": "Smart tech for everyday life",
-  "SLIDE3_TEXT": "Laptops, mobiles, and watches from trusted brands.",
-  "BENEFIT1_TITLE": "Original products",
-  "BENEFIT1_TEXT": "Items from trusted brands.",
-  "BENEFIT2_TITLE": "Clear pricing",
-  "BENEFIT2_TEXT": "Old and new prices side by side.",
-  "BENEFIT3_TITLE": "Easy shopping",
-  "BENEFIT3_TEXT": "Search, filter, and sort in seconds.",
-  "BENEFIT4_TITLE": "We're here to help",
-  "BENEFIT4_TEXT": "Message us on WhatsApp with any question.",
-  "CATEGORIES_TITLE": "Shop by category",
-  "CATEGORIES_SUBTITLE": "Fashion, perfumes, and electronics in one place.",
-  "CAT_FASHION": "Fashion",
-  "CAT_PERFUMES": "Perfumes",
-  "CAT_ELECTRONICS": "Electronics",
-  "PROMO1_TITLE": "New arrivals",
-  "PROMO1_TEXT": "See the latest products added to the store.",
-  "PROMO2_TITLE": "Best sellers",
-  "PROMO2_TEXT": "The products our customers love most.",
-  "ABOUT_TITLE": "About our store",
-  "ABOUT_TEXT": "An online store for fashion, perfumes, and electronics. Browse by category, search and sort to find what you need, and add your picks to the cart.",
-  "CHECK1": "Fashion, perfumes, and electronics in one store",
-  "CHECK2": "Search, filter, and sort in seconds",
-  "CHECK3": "Add items to your cart and review them anytime",
-  "CONTACT_TITLE": "Have a question? Talk to us",
-  "CONTACT_TEXT": "Message us on WhatsApp and we'll help you pick the right product."
-},
+
 "register": {
   "title": "Create account",
   "userName": "Username",
@@ -331,29 +294,28 @@
 },
 "ADMIN_ORDERS": {
   "TITLE": "Order Management",
-  "ALL": "All",
-  "EMPTY": "No orders with this status.",
   "DATE": "Date",
-  "BUYER": "Customer",
+  "BUYER": "Buyer",
   "PAYMENT": "Payment",
   "REFERENCE": "Reference",
   "STATUS": "Status",
   "ACTIONS": "Actions",
-  "PREV": "Previous",
-  "NEXT": "Next",
-  "ACTION_ConfirmPayment": "Confirm payment",
+  "ALL": "All",
+  "EMPTY": "No orders found",
+  "PAGE": "Page",
   "ACTION_Confirmed": "Confirm",
-  "ACTION_Rejected": "Reject payment",
-  "ACTION_Shipped": "Mark shipped",
-  "ACTION_Delivered": "Mark delivered",
+  "ACTION_Shipped": "Mark Shipped",
+  "ACTION_Delivered": "Mark Delivered",
+  "ACTION_Rejected": "Reject",
   "ACTION_Cancelled": "Cancel",
-  "CONFIRM_Rejected": "Reject the payment for order #{{id}}? This can't be undone.",
-  "CONFIRM_Cancelled": "Cancel order #{{id}}? This can't be undone.",
-  "ERR_LOAD": "Couldn't load orders. Please try again.",
-  "ERR_NETWORK": "Couldn't reach the server. Check your connection and try again.",
-  "ERR_FORBIDDEN": "You don't have access to this page.",
-  "ERR_UPDATE": "Couldn't update the status. The list was refreshed, please review and try again.",
-  "ERR_NOT_FOUND": "Order not found."
+  "ACTION_ConfirmPayment": "Confirm Payment",
+  "CONFIRM_Cancelled": "Are you sure you want to cancel order #{{id}}?",
+  "CONFIRM_Rejected": "Are you sure you want to reject order #{{id}}?",
+  "ERR_NETWORK": "Network error",
+  "ERR_FORBIDDEN": "You do not have permission to perform this action",
+  "ERR_LOAD": "Error loading orders",
+  "ERR_NOT_FOUND": "Order not found",
+  "ERR_UPDATE": "Error updating order status"
 },
 "MY_ORDERS": {
   "TITLE": "My Orders",
@@ -395,5 +357,161 @@
     "Delivered": "Delivered",
     "Cancelled": "Cancelled",
     "AwaitingPaymentReview": "Awaiting Payment Review"
+  },
+  
+  "FOOTER": {
+    "BRAND": "E-Commerce",
+    "DESCRIPTION": "Your first destination for online shopping. We offer the best products at the best prices with fast and secure delivery.",
+    "QUICK_LINKS": "Quick Links",
+    "CUSTOMER_SERVICE": "Customer Service",
+    "HOME": "Home",
+    "PRODUCTS": "Products",
+    "ABOUT": "About Us",
+    "MY_ACCOUNT": "My Account",
+    "CONTACT": "Contact Us",
+    "FAQ": "FAQ",
+    "RIGHTS": "All rights reserved."
+  },
+
+"ABOUT": {
+  "TITLE_1": "We Started Our Journey",
+  "TITLE_2": "With Steady Steps",
+  "DESC": "We are a new store with big ambitions. Although we are just starting, we prioritize customer comfort and high quality above all else.",
+  "STAT_1": "Happy Customers",
+  "STAT_2": "Available Products",
+  "STAT_3": "Years of Experience",
+  "STORY_TITLE": "Our Story.. How It Began?",
+  "STORY_DESC_1": "Our launch was just one year ago. We started with a simple idea: how to provide a reliable and fast online shopping experience, away from complexity?",
+  "STORY_DESC_2": "Today, even though we are at the beginning of the road, we are proud to serve over 40 customers who have placed their trust in us. Every customer is a testimonial we cherish, and we strive to grow and offer the best step by step.",
+  "BTN_SHOP": "Discover Our Products",
+  "CONTACT_TITLE": "Contact Us Directly",
+  "CONTACT_DESC": "Our team is ready to answer your questions and help you at any time.",
+  "PHONE_LABEL": "WhatsApp",
+  "PHONE_VALUE": "+201024915651",
+  "EMAIL_LABEL": "Email",
+  "EMAIL_VALUE": "omaranw13@gmail.com"
+},
+
+
+  "HOME": {
+    "HERO": {
+      "BADGE": "Limited Time Exclusive Offers",
+      "TITLE_1": "Everything you need",
+      "TITLE_2": "in one place",
+      "SUBTITLE": "Electronics, fashion, perfumes, and home essentials — shop easily, pay securely, and get your order delivered to your door.",
+      "CHIPS": {
+        "FAST": "Fast Delivery",
+        "SECURE": "100% Secure Payment",
+        "RETURNS": "Easy Returns",
+        "SUPPORT": "24/7 Support"
+      },
+      "CTA": "Shop Now",
+      "CONTACT": "Contact Us",
+      "PREV": "Previous",
+      "NEXT": "Next",
+      "GO_TO": "Go to"
+    },
+    "SECTORS": {
+      "LABEL": "Category",
+      "MEN": {
+        "NAME": "Men's Fashion",
+        "DESC": "A wide selection of trendy and comfortable men's clothing for all occasions.",
+        "TAG1": "Shirts",
+        "TAG2": "Shoes",
+        "TAG3": "Accessories"
+      },
+      "WOMEN": {
+        "NAME": "Women's Fashion",
+        "DESC": "The latest women's fashion trends to shine at every occasion.",
+        "TAG1": "Dresses",
+        "TAG2": "Bags",
+        "TAG3": "Shoes"
+      },
+      "PERFUMES": {
+        "NAME": "Perfumes",
+        "DESC": "The finest oriental and western perfumes that last long.",
+        "TAG1": "Men's Perfumes",
+        "TAG2": "Women's Perfumes",
+        "TAG3": "Incense"
+      },
+      "ELECTRONICS": {
+        "NAME": "Electronics",
+        "DESC": "The latest phones, devices, and accessories from top brands with a real warranty.",
+        "TAG1": "Smartphones",
+        "TAG2": "Laptops",
+        "TAG3": "Smart Home"
+      },
+      "HOME": {
+        "NAME": "Home & Kitchen",
+        "DESC": "All your home and kitchen essentials to design your living space perfectly.",
+        "TAG1": "Kitchen Tools",
+        "TAG2": "Decor",
+        "TAG3": "Appliances"
+      }
+    },
+    "ABOUT": {
+      "TITLE": "Why Choose Us?",
+      "TEXT": "We offer you an exceptional shopping experience with the best features",
+      "FEATURES": {
+        "QUALITY": {
+          "TITLE": "Guaranteed Quality",
+          "TEXT": "All products are carefully inspected before shipping to ensure the highest quality."
+        },
+        "SPEED": {
+          "TITLE": "Fast Delivery",
+          "TEXT": "We deliver your order as fast as possible with the highest safety standards."
+        },
+        "SUPPORT": {
+          "TITLE": "Continuous Support",
+          "TEXT": "Our customer service team is available around the clock to help you."
+        },
+        "RETURNS": {
+          "TITLE": "Easy Returns",
+          "TEXT": "You can easily return or exchange the product within 14 days."
+        },
+        "PAYMENT": {
+          "TITLE": "Secure Payment",
+          "TEXT": "We provide multiple and 100% secure payment methods to protect your data."
+        },
+        "DELIVERY": {
+          "TITLE": "Fast Shipping",
+          "TEXT": "We guarantee your order arrives on time and in the best condition."
+        },
+        "OFFERS": {
+          "TITLE": "Exclusive Offers",
+          "TEXT": "Exclusive discounts and offers for our valued customers all year round."
+        }
+      }
+    },
+    "REVIEWS": {
+      "TITLE": "Customer Reviews",
+      "SUBTITLE": "What do our buyers say?",
+      "ITEMS": {
+        "1": {
+          "TEXT": "Excellent shopping experience, the product arrived quickly and the quality is very good.",
+          "AUTHOR": "Ahmed Mahmoud"
+        },
+        "2": {
+          "TEXT": "Best store I've dealt with, very cooperative customer service and fast delivery.",
+          "AUTHOR": "Sara Ali"
+        },
+        "3": {
+          "TEXT": "Competitive prices and a great selection, I recommend everyone to shop from them.",
+          "AUTHOR": "Mohamed Hassan"
+        }
+      }
+    },
+    "PROMO": {
+      "TITLE": "Special Discount for You!",
+      "TEXT": "Use the following code at checkout and get an extra discount.",
+      "COPY": "Copy",
+      "COPIED": "Copied!"
+    },
+    "WHATSAPP": "Contact us via WhatsApp"
   }
 }
+
+
+
+
+

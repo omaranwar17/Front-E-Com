@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -13,11 +13,27 @@ import { OrderService } from '../../Service/order-service';
   templateUrl: './my-orders.html',
 })
 export class MyOrders {
-  private readonly orders = inject(OrderService);
+  private readonly ordersService = inject(OrderService);
 
+  // البيانات الأساسية
   readonly list = signal<Order[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
+
+  // إعدادات الصفحات
+  readonly pageSize = 10; // 6 أوردرات في الصفحة
+  readonly currentPage = signal(1);
+
+  // دالة بتحسب الأوردرات اللي هتظهر في الصفحة الحالية
+  readonly paginatedOrders = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.pageSize;
+    return this.list().slice(startIndex, startIndex + this.pageSize);
+  });
+
+  // دالة بتعرفنا لو في صفحة تانية ولا لأ
+  readonly hasMore = computed(() => {
+    return this.list().length > this.currentPage() * this.pageSize;
+  });
 
   constructor() {
     this.load();
@@ -27,10 +43,11 @@ export class MyOrders {
     this.loading.set(true);
     this.error.set(null);
 
-    this.orders.getMyOrders().subscribe({
+    this.ordersService.getMyOrders().subscribe({
       next: (orders) => {
         this.list.set(orders);
         this.loading.set(false);
+        this.currentPage.set(1); // نرجع للصفحة الأولى لما نحدث البيانات
       },
       error: (err: HttpErrorResponse) => {
         this.error.set(err.status === 0 ? 'MY_ORDERS.ERR_NETWORK' : 'MY_ORDERS.ERR_LOAD');
@@ -39,7 +56,17 @@ export class MyOrders {
     });
   }
 
-  /** ألوان الشارة حسب الحالة. أي حالة جديدة بتاخد اللون الرمادي تلقائياً. */
+  // دالة التنقل بين الصفحات
+  goTo(page: number): void {
+    if (page < 1 || page > Math.ceil(this.list().length / this.pageSize)) return;
+    this.currentPage.set(page);
+  }
+    readonly totalPages = computed(() => {
+    return Math.ceil(this.list().length / this.pageSize);
+  });
+
+
+
   statusClass(status: string): string {
     switch (status) {
       case 'AwaitingPaymentReview':

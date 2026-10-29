@@ -28,10 +28,18 @@ export class OrderService {
     return this.http.get<Order>(`${this.baseUrl}/${id}`);
   }
 
-    getOrders(status: OrderStatus | null, page = 1, pageSize = 20): Observable<AdminOrderListItem[]> {
+  //   getOrders(status: OrderStatus | null, page = 1, pageSize = 20): Observable<AdminOrderListItem[]> {
+  //   let params = new HttpParams().set('page', page).set('pageSize', pageSize);
+  //   if (status) params = params.set('status', status);
+  //   return this.http.get<AdminOrderListItem[]>(this.baseUrl, { params });
+  // }
+
+  getOrders(status: OrderStatus | null, page = 1, pageSize = 20): Observable<AdminOrderListItem[]> {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
     if (status) params = params.set('status', status);
-    return this.http.get<AdminOrderListItem[]>(this.baseUrl, { params });
+    
+    // التعديل هنا: استخدم adminUrl بدل baseUrl
+    return this.http.get<AdminOrderListItem[]>(this.adminUrl, { params });
   }
 
   getOrder(id: number): Observable<Order> {

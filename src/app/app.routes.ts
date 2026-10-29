@@ -9,6 +9,7 @@ import { guestGuardGuard } from './shared/guard/guest-guard-guard';
 import { ConfirmEmail } from './features/Auth/Component/confirm-email/confirm-email';
 import { ForgotPassword } from './features/Auth/Component/forgot-password/forgot-password';
 import { ResetPassword } from './features/Auth/Component/reset-password/reset-password';
+import { About } from './shared/components/about/about';
 
 
 export const routes: Routes = [
@@ -21,6 +22,11 @@ export const routes: Routes = [
   {
     path: 'Home',
  component:Home
+  },
+
+  {
+    path: 'About',
+ component:About
   },
  {
     path: 'products',

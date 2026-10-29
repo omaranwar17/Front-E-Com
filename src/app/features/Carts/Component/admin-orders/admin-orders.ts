@@ -1,13 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AdminOrderListItem, OrderStatus } from '../../../../shared/Interfases/order';
 import { OrderService } from '../../Service/order-service';
 
-
-
-/** لازم يطابق OrderStatuses.Transitions في الـ backend. أي حالة مش موجودة هنا نهائية. */
 const ORDER_TRANSITIONS: Partial<Record<OrderStatus, OrderStatus[]>> = {
   AwaitingPaymentReview: ['Confirmed', 'Rejected', 'Cancelled'],
   Pending: ['Confirmed', 'Cancelled'],
@@ -15,7 +12,6 @@ const ORDER_TRANSITIONS: Partial<Record<OrderStatus, OrderStatus[]>> = {
   Shipped: ['Delivered'],
 };
 
-/** الحالات اللي مفيش رجوع منها، فبنطلب تأكيد قبلها */
 const CONFIRM_BEFORE: OrderStatus[] = ['Rejected', 'Cancelled'];
 
 @Component({
@@ -27,9 +23,28 @@ export class AdminOrders {
   private readonly adminOrders = inject(OrderService);
   private readonly translate = inject(TranslateService);
 
-  readonly pageSize = 20;
+  readonly pageSize = 10;
 
-  /** null = كل الحالات */
+    // دالة بتحسب أرقام الصفحات اللي تظهر في الباجينيشن
+  readonly pageNumbers = computed(() => {
+    const total = this.page() + (this.hasMore() ? 1 : 0); // تقدير تقريبي
+    const pages = [];
+    // هنعرض 3 أرقام بس عشان الشكل ميبوظش
+    let start = Math.max(1, this.page() - 1);
+    let end = start + 2;
+    
+    // لو إحنا في آخر صفحة، نرجع لورا شوية
+    if (this.page() > 1 && !this.hasMore()) {
+      start = this.page() - 2;
+      end = this.page();
+    }
+
+    for (let i = start; i <= end; i++) {
+        if(i > 0) pages.push(i);
+    }
+    return pages;
+  });
+
   readonly filters: (OrderStatus | null)[] = [
     'AwaitingPaymentReview',
     'Pending',
@@ -41,15 +56,17 @@ export class AdminOrders {
     null,
   ];
 
-  readonly status = signal<OrderStatus | null>('AwaitingPaymentReview');
+  readonly status = signal<OrderStatus | null>(null);
   readonly page = signal(1);
   readonly list = signal<AdminOrderListItem[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 
-  /** الأوردر اللي بيتغير حالته دلوقتي (بيمنع الضغط مرتين) */
   readonly updatingId = signal<number | null>(null);
   readonly actionError = signal<string | null>(null);
+
+  // متغير عشان نتحكم في فتح وقفل الدروب داون
+  readonly openDropdownId = signal<number | null>(null);
 
   private requestId = 0;
 
@@ -83,7 +100,7 @@ export class AdminOrders {
 
     this.adminOrders.getOrders(this.status(), this.page(), this.pageSize).subscribe({
       next: (orders) => {
-        if (id !== this.requestId) return; // رد قديم
+        if (id !== this.requestId) return;
         this.list.set(orders);
         this.loading.set(false);
       },
@@ -102,12 +119,10 @@ export class AdminOrders {
     });
   }
 
-  /** الحالات اللي الأوردر ده يقدر يتحول لها */
   transitionsFor(order: AdminOrderListItem): OrderStatus[] {
     return ORDER_TRANSITIONS[order.status] ?? [];
   }
 
-  /** مفتاح الترجمة للزرار. تأكيد أوردر التحويل اسمه "تأكيد الدفع" */
   actionKey(order: AdminOrderListItem, target: OrderStatus): string {
     return target === 'Confirmed' && order.status === 'AwaitingPaymentReview'
       ? 'ADMIN_ORDERS.ACTION_ConfirmPayment'
@@ -116,8 +131,17 @@ export class AdminOrders {
 
   actionClass(target: OrderStatus): string {
     return target === 'Rejected' || target === 'Cancelled'
-      ? 'border-red-300 text-red-700 hover:bg-red-50'
-      : 'border-indigo-300 text-indigo-700 hover:bg-indigo-50';
+      ? 'text-red-600 font-medium'
+      : 'text-gray-700';
+  }
+
+  // دالة فتح وقفل الدروب داون
+  toggleDropdown(id: number): void {
+    if (this.openDropdownId() === id) {
+      this.openDropdownId.set(null);
+    } else {
+      this.openDropdownId.set(id);
+    }
   }
 
   changeStatus(order: AdminOrderListItem, target: OrderStatus): void {
@@ -150,13 +174,11 @@ export class AdminOrders {
         );
         this.updatingId.set(null);
 
-        // 400 / 404 معناها إن الحالة اتغيرت من مكان تاني، فنحدّث القايمة
         if (err.status === 400 || err.status === 404) this.load();
       },
     });
   }
 
-  /** لو الفلتر مش "الكل" والحالة الجديدة خارجه، الصف يختفي. غير كده نحدّث الحالة في مكانها. */
   private applyUpdate(id: number, newStatus: OrderStatus): void {
     const filter = this.status();
     this.list.update((items) =>
@@ -166,7 +188,6 @@ export class AdminOrders {
     );
   }
 
-  /** ألوان الشارة حسب الحالة. أي حالة جديدة بتاخد اللون الرمادي. */
   statusClass(status: string): string {
     switch (status) {
       case 'AwaitingPaymentReview':
