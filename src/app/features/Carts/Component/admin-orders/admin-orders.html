@@ -73,8 +73,9 @@
       <!-- شبكة الكروت -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @for (o of list(); track o.id; let i = $index) {
-          <div class="anim-card relative flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-lg"
+          <div  class="anim-card relative flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-lg"
                [style.animation-delay.ms]="(i % 9) * 60">
+                 <a [routerLink]="['/orders', o.id]" class="block cursor-pointer">
 
             <!-- رأس الكارت -->
             <div class="p-5 border-b border-gray-100 flex justify-between items-start">
@@ -111,6 +112,7 @@
                 <span class="font-bold text-gray-900 text-lg">{{ o.total | currency: 'EGP' }}</span>
               </div>
             </div>
+            </a>
 
             <!-- إجراءات الكارت -->
             <div class="p-4 bg-gray-50 rounded-b-xl border-t border-gray-100">

@@ -46,6 +46,11 @@
   "Admin": {
   "ADD_PRODUCT": "Add Product",
    "CATEGORY_HAS_SIZES": "This category has sizes (e.g., clothes)",
+   "PRINT_LABEL": "Print label",
+   "BARCODE": "Barcode",
+"BARCODE_HINT": "Scan or type a barcode. Leave empty to generate one automatically.",
+"BARCODE_INVALID": "Barcode must be 4-32 letters, digits or dashes",
+
     "CATEGORY_NAME": "Category name",
     "CATEGORY_NAME_PLACEHOLDER": "e.g. Electronics",
     "CATEGORY_DESCRIPTION": "Description (optional)",
@@ -299,6 +304,7 @@
   "BUYER": "Buyer",
   "PAYMENT": "Payment",
   "REFERENCE": "Reference",
+  "NO_ACTIONS": "No actions",
   "STATUS": "Status",
   "ACTIONS": "Actions",
   "ALL": "All",

@@ -92,6 +92,20 @@
       }
     </div>
 
+    <!-- الباركود -->
+<div>
+  <label for="barcode" class="block mb-1.5 text-sm font-medium text-gray-700">{{ 'Admin.BARCODE' | translate }}</label>
+  <input id="barcode" type="text" formControlName="barcode" dir="ltr" autocomplete="off"
+         (keydown.enter)="$event.preventDefault()"
+         class="w-full bg-white border border-gray-300 rounded-xl py-2.5 px-3 text-sm text-gray-700 transition-all duration-200
+                hover:border-indigo-300 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100">
+  @if (form.controls.barcode.touched && form.controls.barcode.hasError('pattern')) {
+    <p class="mt-1 text-xs text-red-500">{{ 'Admin.BARCODE_INVALID' | translate }}</p>
+  } @else {
+    <p class="mt-1 text-xs text-gray-400">{{ 'Admin.BARCODE_HINT' | translate }}</p>
+  }
+</div>
+
     <!-- ✅ Sizes (بيظهر بس لو الكاتيجوري HasSizes) -->
     @if (showSizeField()) {
       <div class="mb-4">

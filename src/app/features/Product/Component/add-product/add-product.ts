@@ -71,16 +71,20 @@ export class AddProduct implements OnInit {
   readonly imageBase = 'https://localhost:7020';
 
   form = new FormGroup(
-    {
-      name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      description: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      newPrice: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
-      oldPrice: new FormControl<number | null>(null, [Validators.min(0)]),
-      categoryId: new FormControl<number | null>(null, [Validators.required]),
-      sizes: new FormControl<number[]>([], { nonNullable: true }), // ✅ بقت Array
-    },
-    { validators: oldPriceValidator }
-  );
+  {
+    name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    description: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    newPrice: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
+    oldPrice: new FormControl<number | null>(null, [Validators.min(0)]),
+    categoryId: new FormControl<number | null>(null, [Validators.required]),
+    sizes: new FormControl<number[]>([], { nonNullable: true }),
+    barcode: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.pattern(/^[A-Za-z0-9-]{4,32}$/)],
+    }),
+  },
+  { validators: oldPriceValidator }
+);
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.revokeAll());
@@ -137,7 +141,8 @@ export class AddProduct implements OnInit {
           newPrice: p.newPrice,
           oldPrice: p.oldPrice,
           categoryId: p.categoryId,
-          sizes: selectedSizes // ✅ بنبعت الـ Array
+          sizes: selectedSizes ,
+           barcode: p.barcode ?? '', // ✅
         });
         this.existingPhotos.set((p.photos ?? []).map((ph: any) => ph.imageName));
         
@@ -230,6 +235,8 @@ export class AddProduct implements OnInit {
     fd.append('NewPrice', String(v.newPrice));
     fd.append('OldPrice', String(v.oldPrice ?? 0));
     fd.append('CategoryId', String(v.categoryId));
+    const barcode = v.barcode.trim();
+if (barcode) fd.append('Barcode', barcode);
 
     // ✅ إرسال المقاسات كـ Array للباك إند
     if (this.showSizeField() && v.sizes && v.sizes.length > 0) {

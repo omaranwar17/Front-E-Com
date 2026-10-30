@@ -12,6 +12,7 @@ export interface BasketProductSource {
   name: string;
   newPrice: number;
   categoryName: string;
+    barcode?: string | null;
     size?: string | null;
   photos?: { imageName: string }[];
 }
@@ -89,15 +90,30 @@ export class BasketService {
   }
 
   /** مرّر IProduct مباشرة: بيتحول لـ BasketItem بالحقول الستة بس. */
- addProduct(product: BasketProductSource, quantity = 1): Observable<Carts> {
+//  addProduct(product: BasketProductSource, quantity = 1): Observable<Carts> {
+//   return this.addItem(
+//     {
+//       id: product.id,
+//       name: product.name,
+//       image: product.photos?.[0]?.imageName || FALLBACK_IMAGE, 
+//       price: product.newPrice,
+//       category: product.categoryName || 'Uncategorized', 
+//        barcode: product.barcode ?? '',
+//       size: product.size || null, // ✅ ضيف السطر ده عشان يتبعت
+//     },
+//     quantity
+//   );
+// }
+
+addProduct(product: BasketProductSource, quantity = 1): Observable<Carts> {
   return this.addItem(
     {
       id: product.id,
       name: product.name,
-      image: product.photos?.[0]?.imageName || FALLBACK_IMAGE, 
+      image: product.photos?.[0]?.imageName || FALLBACK_IMAGE,
       price: product.newPrice,
-      category: product.categoryName || 'Uncategorized', 
-      size: product.size || null, // ✅ ضيف السطر ده عشان يتبعت
+      category: product.categoryName || 'Uncategorized',
+      size: product.size || null,
     },
     quantity
   );
@@ -168,20 +184,36 @@ removeItem(itemId: number, size: string | null | undefined): Observable<Carts> {
 
   // ---------- Internals ----------
 
+  // private save(basketItems: BasketItem[]): Observable<Carts> {
+  //   const previous = this._basket();
+  //   const payload: Carts = { id: previous?.id || PLACEHOLDER_ID, basketItems };
+
+  //   this._basket.set(payload);
+
+  //   return this.http.post<Carts>(this.baseUrl, payload).pipe(
+  //     map(() => payload),
+  //     catchError((err: HttpErrorResponse) => {
+  //       this._basket.set(previous);
+  //       return throwError(() => err);
+  //     })
+  //   );
+  // }
+
   private save(basketItems: BasketItem[]): Observable<Carts> {
-    const previous = this._basket();
-    const payload: Carts = { id: previous?.id || PLACEHOLDER_ID, basketItems };
+  const previous = this._basket();
+  const payload: Carts = { id: previous?.id || PLACEHOLDER_ID, basketItems };
 
-    this._basket.set(payload);
+  this._basket.set(payload);
 
-    return this.http.post<Carts>(this.baseUrl, payload).pipe(
-      map(() => payload),
-      catchError((err: HttpErrorResponse) => {
-        this._basket.set(previous);
-        return throwError(() => err);
-      })
-    );
-  }
+  return this.http.post<Carts>(this.baseUrl, payload).pipe(
+    map((saved) => this.normalize(saved)),
+    tap((saved) => this._basket.set(saved)),
+    catchError((err: HttpErrorResponse) => {
+      this._basket.set(previous);
+      return throwError(() => err);
+    })
+  );
+}
 
   private normalize(basket: Carts | null): Carts {
     return { id: basket?.id || PLACEHOLDER_ID, basketItems: basket?.basketItems ?? [] };
