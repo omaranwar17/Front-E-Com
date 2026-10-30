@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -17,6 +17,7 @@ export class MyOrders {
   private readonly ordersService = inject(OrderService);
   private readonly toastr = inject(ToastrService);
   private readonly translate = inject(TranslateService);
+   private readonly router = inject(Router);
   // البيانات الأساسية
   readonly list = signal<Order[]>([]);
   readonly loading = signal(true);
@@ -86,6 +87,12 @@ export class MyOrders {
         return 'bg-gray-100 text-gray-800';
     }
   }
+
+ 
+
+goToDetails(id: number): void {
+  this.router.navigate(['/orders', id]);
+}
 
  printInvoice(orderId: number): void {
     this.ordersService.downloadInvoice(orderId, 'customer').subscribe({

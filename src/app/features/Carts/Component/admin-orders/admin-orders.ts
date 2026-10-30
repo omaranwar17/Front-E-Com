@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { AdminOrderListItem, OrderStatus } from '../../../../shared/Interfases/order';
 import { OrderService } from '../../Service/order-service';
+import { RouterLink } from '@angular/router';
 
 const ORDER_TRANSITIONS: Partial<Record<OrderStatus, OrderStatus[]>> = {
   AwaitingPaymentReview: ['Confirmed', 'Rejected', 'Cancelled'],
@@ -18,7 +19,7 @@ const CONFIRM_BEFORE: OrderStatus[] = ['Rejected', 'Cancelled'];
 
 @Component({
   selector: 'app-admin-orders',
-  imports: [CurrencyPipe, DatePipe, TranslatePipe],
+  imports: [CurrencyPipe, DatePipe, TranslatePipe , RouterLink],
   templateUrl: './admin-orders.html',
 })
 export class AdminOrders {

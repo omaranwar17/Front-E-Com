@@ -9,6 +9,7 @@ export interface BasketItem {
   image: string
   price: number
   qunatity: number
+    barcode?: string | null;
   category: string
   size?: string | null;
 }

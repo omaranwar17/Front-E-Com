@@ -8,9 +8,11 @@ import { ProductService } from '../../Service/product-service';
 import { ToastrService } from 'ngx-toastr';
 import { BasketService } from '../../../Carts/Service/BasketService';
 import { Auth } from '../../../Auth/Services/auth';
+import { BarcodeComponent } from '../../../../shared/components/barcode-component/barcode-component';
+import { printBarcodeLabels } from '../../../../shared/components/barcode-print/barcode-print';
 
 @Component({
-  imports: [CommonModule, TranslatePipe, RouterLink],
+  imports: [CommonModule, TranslatePipe, RouterLink ],
   selector: 'app-product-list',
   styleUrl: './product-list.scss',
   templateUrl: './product-list.html',
@@ -41,6 +43,12 @@ closeMenu(): void {
 toggleMenu(event: Event, id: number): void {
   event.stopPropagation(); // عشان الـ click مايقفلش المنيو فوراً
   this.openMenuId.update(current => (current === id ? null : id));
+}
+
+onPrintLabel(product: IProduct): void {
+  if (!product.barcode) return;
+  this.openMenuId.set(null);
+  printBarcodeLabels([{ name: product.name, barcode: product.barcode, price: product.newPrice }]);
 }
 
 
@@ -122,9 +130,14 @@ onEscape(): void {
     return Math.round((1 - product.newPrice / product.oldPrice) * 100);
   }
 
-  addToCart(product: any): void {
+addToCart(product: any): void {
   this.basket.addProduct(product).subscribe({
-    next: () => this.toastr.success(product.name),
+    next: (saved) => {
+      const added = saved.basketItems.some((i) => i.id === product.id);
+      added
+        ? this.toastr.success(product.name)
+        : this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));
+    },
     error: (e) => {
       console.error('Add to cart failed', e.status, e.error);
       this.toastr.error(this.translate.instant('COMMON.SOMETHING_WRONG'));

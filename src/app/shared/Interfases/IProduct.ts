@@ -4,6 +4,7 @@ export interface IProduct {
   description: string
   newPrice: number
   oldPrice:number
+  barcode?: string | null;
   categoryName: string
    sizes: string | null;
   photos: IPhoto[]

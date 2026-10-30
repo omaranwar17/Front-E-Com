@@ -45,6 +45,12 @@
   "Admin": {
   "ADD_PRODUCT": "إضافة منتج",
   "ADD_CATEGORY": "إضافة فئة",
+  "BARCODE": "الباركود",
+"BARCODE_HINT": "امسح الباركود أو اكتبه. سيبه فاضي لو عايز يتولد تلقائي.",
+"BARCODE_INVALID": "الباركود لازم يكون من 4 إلى 32 حرف أو رقم أو شرطة",
+
+  
+  "PRINT_LABEL": "طباعة الستيكر",
   "BACK": "رجوع",
    "CATEGORY_HAS_SIZES": "هذه الفئة تحتوي على مقاسات (مثل الملابس)",
   "NAME": "اسم المنتج",
@@ -311,6 +317,7 @@
   "ACTION_Delivered": "تم التسليم",
   "ACTION_Rejected": "رفض",
   "ACTION_Cancelled": "إلغاء",
+  "NO_ACTIONS": "لا توجد إجراءات",
   "ACTION_ConfirmPayment": "تأكيد الدفع",
   "CONFIRM_Cancelled": "هل أنت متأكد من إلغاء الطلب #{{id}}؟",
   "CONFIRM_Rejected": "هل أنت متأكد من رفض الطلب #{{id}}؟",
