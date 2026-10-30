@@ -20,7 +20,7 @@ export class About implements OnInit {
   // الأرقام النهائية اللي عايز توصلها
   targetClients = 40;
   targetProducts = 100;
-  targetYears = 2;
+  targetYears = 1;
 
   constructor(private cdr: ChangeDetectorRef) {}
 

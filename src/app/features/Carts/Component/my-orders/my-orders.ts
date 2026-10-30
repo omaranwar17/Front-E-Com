@@ -2,10 +2,11 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Order } from '../../../../shared/Interfases/order';
 import { OrderService } from '../../Service/order-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-my-orders',
@@ -14,7 +15,8 @@ import { OrderService } from '../../Service/order-service';
 })
 export class MyOrders {
   private readonly ordersService = inject(OrderService);
-
+  private readonly toastr = inject(ToastrService);
+  private readonly translate = inject(TranslateService);
   // البيانات الأساسية
   readonly list = signal<Order[]>([]);
   readonly loading = signal(true);
@@ -83,5 +85,26 @@ export class MyOrders {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  }
+
+ printInvoice(orderId: number): void {
+    this.ordersService.downloadInvoice(orderId, 'customer').subscribe({
+      next: (blob: Blob) => {
+        const fileURL = URL.createObjectURL(blob);
+        const newWindow = window.open(fileURL, '_blank');
+        if (newWindow) {
+          newWindow.onload = () => newWindow.print();
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error downloading invoice', err);
+        
+        // استخدام الترجمة في رسالة الخطأ
+        const errorMsg = this.translate.instant('MY_ORDERS.ERR_INVOICE');
+        const errorTitle = this.translate.instant('COMMON.ERROR');
+        
+        this.toastr.error(errorMsg, errorTitle);
+      }
+    });
   }
 }

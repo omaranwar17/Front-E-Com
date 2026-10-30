@@ -2,11 +2,13 @@ import { inject, Service } from '@angular/core';
 import { CategoryDto, EditCategoryDto, ResponseApi } from '../../../shared/Interfases/category-dto';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Service()
 export class CategoryService {
 private http = inject(HttpClient);
-     private baseUrl = 'https://localhost:7020/api/';
+
+     private readonly baseUrl  = `${environment.apiUrl}/api/`;
   
    
 

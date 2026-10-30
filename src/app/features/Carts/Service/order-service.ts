@@ -2,12 +2,14 @@ import { inject, Service } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AdminOrderListItem, CreateOrderRequest, Order, OrderStatus, PaymentInfo } from '../../../shared/Interfases/order';
+import { environment } from '../../../../environments/environment';
 
 @Service()
 export class OrderService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://localhost:7020/api/Orders';
-  private adminUrl = 'https://localhost:7020/api/admin/orders'
+  
+    private baseUrl = `${environment.apiUrl}/api/Orders`;
+  private adminUrl = `${environment.apiUrl}/api/admin/orders`;
 
   create(request: CreateOrderRequest): Observable<Order> {
     return this.http.post<Order>(this.baseUrl, request);
@@ -49,4 +51,21 @@ export class OrderService {
   updateStatus(id: number, status: OrderStatus): Observable<Order> {
     return this.http.patch<Order>(`${this.adminUrl}/${id}/status`, { status });
   }
+
+downloadInvoice(orderId: number, type: 'customer' | 'admin'): Observable<Blob> {
+  let url = '';
+
+  // لو الأدمن هو اللي بيطلب، بنروح للـ Endpoint بتاعة الأدمن اللي بتجيب أي أوردر
+  if (type === 'admin') {
+    url = `${this.baseUrl}/${orderId}/admin-invoice`;
+  } 
+  // لو العميل (أو الأدمن بيطبع فاتورته هو من صفحة طلباتي)، بنروح للـ my-invoice
+  else {
+    url = `${this.baseUrl}/${orderId}/my-invoice`;
+  }
+
+  return this.http.get(url, {
+    responseType: 'blob'
+  });
+}
 }

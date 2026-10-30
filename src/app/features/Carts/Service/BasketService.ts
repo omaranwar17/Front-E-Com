@@ -2,6 +2,7 @@ import { computed, inject, Service, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { BasketItem, Carts, IBasketTotal } from '../../../shared/Interfases/basket';
+import { environment } from '../../../../environments/environment';
 
 export type NewBasketItem = Omit<BasketItem, 'qunatity'>;
 
@@ -25,7 +26,9 @@ export class BasketService {
   private readonly http = inject(HttpClient);
 
   // السيرفر بيحدد السلة من التوكن، فمفيش id في الـ URL
-  private readonly baseUrl = 'https://localhost:7020/api/Basket';
+ 
+  private readonly baseUrl  = `${environment.apiUrl}/api/Basket`;
+  
 
   private readonly FREE_SHIPPING_THRESHOLD = 30000;
   private readonly SHIPPING_FEE = 50; // غيّرها لرسوم الشحن الحقيقية

@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, finalize, firstValueFrom, map, of, switchMap, tap, timeout } from 'rxjs';
 import { BasketService } from '../../Carts/Service/BasketService';
+import { environment } from '../../../../environments/environment';
 
 export interface CurrentUser {
   email: string;
@@ -9,7 +10,8 @@ export interface CurrentUser {
   roles: string[];
 }
 
-export const API = 'https://localhost:7020/api/Acount';
+export const API = `${environment.apiUrl}/api/Acount`;
+
 
 @Injectable({ providedIn: 'root' })
 export class Auth {

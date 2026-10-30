@@ -36,6 +36,12 @@ export class Navbar {
  
   }
 
+
+
+onSearch(): void {
+
+}
+
    logout() {
   this.isAccountMenuOpen.set(false);
   this.auth.logout().subscribe({

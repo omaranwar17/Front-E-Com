@@ -8,6 +8,7 @@
     "BEST_SELLER": "Best Seller",
     "SEARCH": "Search",
     "CART": "Cart",
+     "SEARCH_PLACEHOLDER": "Search products...",
     "ACCOUNT": "Account",
     "REGISTER": "Register",
     "LOGIN": "Login",
@@ -320,8 +321,10 @@
 "MY_ORDERS": {
   "TITLE": "My Orders",
   "LOADING": "Loading your orders...",
+   "INVOICE": "Invoice",
   "EMPTY": "You haven't placed any orders yet.",
   "RETRY": "Try again",
+    "ERR_INVOICE": "An error occurred while downloading the invoice. Please try again.",
   "ORDER_NO": "Order #{{id}}",
   "ERR_LOAD": "Couldn't load your orders. Please try again.",
   "ERR_NETWORK": "Couldn't reach the server. Check your connection and try again.",
@@ -332,6 +335,14 @@
   "STATUS_Shipped": "Shipped",
   "STATUS_Delivered": "Delivered",
   "STATUS_Cancelled": "Cancelled",
+ "OF": "of",
+    "ID": "Order #",
+    "DATE": "Date",
+    "ITEMS": "Items",
+    "PAYMENT": "Payment",
+    "TOTAL": "Total",
+    "STATUS": "Status",
+    
   "STATUS_Rejected": "Rejected"
 },
   "ORDER_DETAILS": {
@@ -441,7 +452,7 @@
         "TAG2": "Laptops",
         "TAG3": "Smart Home"
       },
-      "HOME": {
+      "HOME_KITCHEN": {
         "NAME": "Home & Kitchen",
         "DESC": "All your home and kitchen essentials to design your living space perfectly.",
         "TAG1": "Kitchen Tools",
