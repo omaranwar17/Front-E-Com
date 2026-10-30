@@ -3,6 +3,7 @@ import { inject, Service } from '@angular/core';
 import { IPagnation } from '../../../shared/Interfases/Pagnation';
 import { IProduct } from '../../../shared/Interfases/IProduct';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 export interface IProductQuery {
   search?: string;
@@ -15,7 +16,8 @@ export interface IProductQuery {
 @Service()
 export class ProductService {
   private _http = inject(HttpClient);
-  private baseUrl = 'https://localhost:7020/api/';
+  
+  private readonly baseUrl  = `${environment.apiUrl}/api/`;
 
   getProducts(query: IProductQuery): Observable<IPagnation<IProduct>> {
     let params = new HttpParams()

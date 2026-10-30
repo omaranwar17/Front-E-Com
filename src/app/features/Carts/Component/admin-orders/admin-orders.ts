@@ -2,6 +2,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+
 import { AdminOrderListItem, OrderStatus } from '../../../../shared/Interfases/order';
 import { OrderService } from '../../Service/order-service';
 
@@ -22,28 +24,9 @@ const CONFIRM_BEFORE: OrderStatus[] = ['Rejected', 'Cancelled'];
 export class AdminOrders {
   private readonly adminOrders = inject(OrderService);
   private readonly translate = inject(TranslateService);
+  private readonly toastr = inject(ToastrService);
 
   readonly pageSize = 10;
-
-    // دالة بتحسب أرقام الصفحات اللي تظهر في الباجينيشن
-  readonly pageNumbers = computed(() => {
-    const total = this.page() + (this.hasMore() ? 1 : 0); // تقدير تقريبي
-    const pages = [];
-    // هنعرض 3 أرقام بس عشان الشكل ميبوظش
-    let start = Math.max(1, this.page() - 1);
-    let end = start + 2;
-    
-    // لو إحنا في آخر صفحة، نرجع لورا شوية
-    if (this.page() > 1 && !this.hasMore()) {
-      start = this.page() - 2;
-      end = this.page();
-    }
-
-    for (let i = start; i <= end; i++) {
-        if(i > 0) pages.push(i);
-    }
-    return pages;
-  });
 
   readonly filters: (OrderStatus | null)[] = [
     'AwaitingPaymentReview',
@@ -67,6 +50,23 @@ export class AdminOrders {
 
   // متغير عشان نتحكم في فتح وقفل الدروب داون
   readonly openDropdownId = signal<number | null>(null);
+
+  // دالة بتحسب أرقام الصفحات اللي تظهر في الباجينيشن
+  readonly pageNumbers = computed(() => {
+    const pages = [];
+    let start = Math.max(1, this.page() - 1);
+    let end = start + 2;
+
+    if (this.page() > 1 && !this.hasMore()) {
+      start = this.page() - 2;
+      end = this.page();
+    }
+
+    for (let i = start; i <= end; i++) {
+      if (i > 0) pages.push(i);
+    }
+    return pages;
+  });
 
   private requestId = 0;
 
@@ -112,7 +112,7 @@ export class AdminOrders {
             ? 'ADMIN_ORDERS.ERR_NETWORK'
             : err.status === 403
               ? 'ADMIN_ORDERS.ERR_FORBIDDEN'
-              : 'ADMIN_ORDERS.ERR_LOAD',
+              : 'ADMIN_ORDERS.ERR_LOAD'
         );
         this.loading.set(false);
       },
@@ -170,7 +170,7 @@ export class AdminOrders {
               ? 'ADMIN_ORDERS.ERR_NOT_FOUND'
               : err.status === 403
                 ? 'ADMIN_ORDERS.ERR_FORBIDDEN'
-                : 'ADMIN_ORDERS.ERR_UPDATE',
+                : 'ADMIN_ORDERS.ERR_UPDATE'
         );
         this.updatingId.set(null);
 
@@ -184,7 +184,7 @@ export class AdminOrders {
     this.list.update((items) =>
       filter && filter !== newStatus
         ? items.filter((i) => i.id !== id)
-        : items.map((i) => (i.id === id ? { ...i, status: newStatus } : i)),
+        : items.map((i) => (i.id === id ? { ...i, status: newStatus } : i))
     );
   }
 
@@ -204,5 +204,24 @@ export class AdminOrders {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  }
+
+  // دالة طباعة الفاتورة للأدمن
+  printInvoice(orderId: number): void {
+    this.adminOrders.downloadInvoice(orderId, 'admin').subscribe({
+      next: (blob: Blob) => {
+        const fileURL = URL.createObjectURL(blob);
+        const newWindow = window.open(fileURL, '_blank');
+        if (newWindow) {
+          newWindow.onload = () => newWindow.print();
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error downloading invoice', err);
+        const errorMsg = this.translate.instant('MY_ORDERS.ERR_INVOICE');
+        const errorTitle = this.translate.instant('COMMON.ERROR');
+        this.toastr.error(errorMsg, errorTitle);
+      },
+    });
   }
 }
