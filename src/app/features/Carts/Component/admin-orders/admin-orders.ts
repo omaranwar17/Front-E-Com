@@ -1,6 +1,7 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnDestroy } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 
@@ -17,15 +18,25 @@ const ORDER_TRANSITIONS: Partial<Record<OrderStatus, OrderStatus[]>> = {
 
 const CONFIRM_BEFORE: OrderStatus[] = ['Rejected', 'Cancelled'];
 
+interface ConfirmDialog {
+  titleKey: string;
+  messageKey: string;
+  confirmKey: string;
+  id: number;
+  danger: boolean;
+  onConfirm: () => void;
+}
+
 @Component({
   selector: 'app-admin-orders',
-  imports: [CurrencyPipe, DatePipe, TranslatePipe , RouterLink],
+  imports: [CurrencyPipe, DatePipe, TranslatePipe, RouterLink],
   templateUrl: './admin-orders.html',
 })
-export class AdminOrders {
+export class AdminOrders implements OnDestroy {
   private readonly adminOrders = inject(OrderService);
   private readonly translate = inject(TranslateService);
   private readonly toastr = inject(ToastrService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   readonly pageSize = 10;
 
@@ -51,6 +62,15 @@ export class AdminOrders {
 
   // متغير عشان نتحكم في فتح وقفل الدروب داون
   readonly openDropdownId = signal<number | null>(null);
+
+  // حالة عرض الإيصال
+  readonly receiptOrderId = signal<number | null>(null);
+  readonly receiptUrl = signal<SafeUrl | null>(null);
+  readonly receiptLoading = signal(false);
+  private rawReceiptUrl: string | null = null;
+
+  // حالة مودال التأكيد (بديل window.confirm)
+  readonly confirmDialog = signal<ConfirmDialog | null>(null);
 
   // دالة بتحسب أرقام الصفحات اللي تظهر في الباجينيشن
   readonly pageNumbers = computed(() => {
@@ -145,16 +165,26 @@ export class AdminOrders {
     }
   }
 
+  // ===== تغيير الحالة =====
   changeStatus(order: AdminOrderListItem, target: OrderStatus): void {
     if (this.updatingId() !== null) return;
 
-    if (
-      CONFIRM_BEFORE.includes(target) &&
-      !window.confirm(this.translate.instant(`ADMIN_ORDERS.CONFIRM_${target}`, { id: order.id }))
-    ) {
+    if (CONFIRM_BEFORE.includes(target)) {
+      this.confirmDialog.set({
+        titleKey: 'ADMIN_ORDERS.CONFIRM_TITLE',
+        messageKey: `ADMIN_ORDERS.CONFIRM_${target}`,
+        confirmKey: `ADMIN_ORDERS.ACTION_${target}`,
+        id: order.id,
+        danger: true,
+        onConfirm: () => this.performStatusChange(order, target),
+      });
       return;
     }
 
+    this.performStatusChange(order, target);
+  }
+
+  private performStatusChange(order: AdminOrderListItem, target: OrderStatus): void {
     this.updatingId.set(order.id);
     this.actionError.set(null);
 
@@ -187,6 +217,71 @@ export class AdminOrders {
         ? items.filter((i) => i.id !== id)
         : items.map((i) => (i.id === id ? { ...i, status: newStatus } : i))
     );
+  }
+
+  // ===== الحذف (للطلبات الملغاة فقط) =====
+  canDelete(order: AdminOrderListItem): boolean {
+    return order.status === 'Cancelled';
+  }
+
+  deleteOrder(order: AdminOrderListItem): void {
+    if (this.updatingId() !== null || !this.canDelete(order)) return;
+
+    this.confirmDialog.set({
+      titleKey: 'ADMIN_ORDERS.DELETE_TITLE',
+      messageKey: 'ADMIN_ORDERS.CONFIRM_DELETE',
+      confirmKey: 'ADMIN_ORDERS.DELETE',
+      id: order.id,
+      danger: true,
+      onConfirm: () => this.performDelete(order),
+    });
+  }
+
+  private performDelete(order: AdminOrderListItem): void {
+    this.updatingId.set(order.id);
+    this.actionError.set(null);
+
+    this.adminOrders.deleteOrder(order.id).subscribe({
+      next: () => {
+        this.updatingId.set(null);
+        this.toastr.success(
+          this.translate.instant('ADMIN_ORDERS.DELETED', { id: order.id }),
+          this.translate.instant('COMMON.SUCCESS'),
+        );
+        // لو ده آخر عنصر في صفحة غير الأولى، ارجع صفحة
+        if (this.list().length === 1 && this.page() > 1) {
+          this.page.update((p) => p - 1);
+        }
+        // reload عشان الباجينيشن يفضل دقيق (العناصر بتتزحزح بين الصفحات)
+        this.load();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.updatingId.set(null);
+        this.actionError.set(
+          err.status === 0
+            ? 'ADMIN_ORDERS.ERR_NETWORK'
+            : err.status === 403
+              ? 'ADMIN_ORDERS.ERR_FORBIDDEN'
+              : err.status === 404
+                ? 'ADMIN_ORDERS.ERR_NOT_FOUND'
+                : err.status === 400 || err.status === 409
+                  ? 'ADMIN_ORDERS.ERR_DELETE_NOT_ALLOWED'
+                  : 'ADMIN_ORDERS.ERR_DELETE'
+        );
+        if (err.status === 400 || err.status === 404 || err.status === 409) this.load();
+      },
+    });
+  }
+
+  // ===== مودال التأكيد =====
+  acceptConfirm(): void {
+    const dialog = this.confirmDialog();
+    this.confirmDialog.set(null);
+    dialog?.onConfirm();
+  }
+
+  closeConfirm(): void {
+    this.confirmDialog.set(null);
   }
 
   statusClass(status: string): string {
@@ -224,5 +319,40 @@ export class AdminOrders {
         this.toastr.error(errorMsg, errorTitle);
       },
     });
+  }
+
+  // عرض الإيصال
+  viewReceipt(orderId: number): void {
+    this.closeReceipt();
+    this.receiptOrderId.set(orderId);
+    this.receiptLoading.set(true);
+
+    this.adminOrders.getReceipt(orderId).subscribe({
+      next: (blob: Blob) => {
+        this.rawReceiptUrl = URL.createObjectURL(blob);
+        this.receiptUrl.set(this.sanitizer.bypassSecurityTrustUrl(this.rawReceiptUrl));
+        this.receiptLoading.set(false);
+      },
+      error: () => {
+        this.receiptLoading.set(false);
+        this.receiptOrderId.set(null);
+        this.toastr.error(
+          this.translate.instant('ADMIN_ORDERS.ERR_RECEIPT'),
+          this.translate.instant('COMMON.ERROR'),
+        );
+      },
+    });
+  }
+
+  closeReceipt(): void {
+    if (this.rawReceiptUrl) URL.revokeObjectURL(this.rawReceiptUrl);
+    this.rawReceiptUrl = null;
+    this.receiptUrl.set(null);
+    this.receiptOrderId.set(null);
+    this.receiptLoading.set(false);
+  }
+
+  ngOnDestroy(): void {
+    this.closeReceipt();
   }
 }

@@ -7,19 +7,40 @@ import { environment } from '../../../../environments/environment';
 @Service()
 export class OrderService {
   private readonly http = inject(HttpClient);
-  
-    private baseUrl = `${environment.apiUrl}/api/Orders`;
+
+  private baseUrl = `${environment.apiUrl}/api/Orders`;
   private adminUrl = `${environment.apiUrl}/api/admin/orders`;
 
-  create(request: CreateOrderRequest): Observable<Order> {
-    return this.http.post<Order>(this.baseUrl, request);
+  // <-- جديد: بقت FormData بدل JSON، وبتاخد الصورة كباراميتر تاني
+  create(request: CreateOrderRequest, receiptImage?: File | null): Observable<Order> {
+    const fd = new FormData();
+    const a = request.shippingAddress;
+
+    // أسماء الحقول لازم تطابق الـ DTO في الباك بالظبط
+    fd.append('ShippingAddress.FullName', a.fullName);
+    fd.append('ShippingAddress.Phone', a.phone);
+    fd.append('ShippingAddress.Governorate', a.governorate);
+    fd.append('ShippingAddress.City', a.city);
+    fd.append('ShippingAddress.Street', a.street);
+    if (a.notes) fd.append('ShippingAddress.Notes', a.notes);
+
+    fd.append('PaymentMethod', request.paymentMethod);
+    if (request.paymentReference)
+      fd.append('PaymentReference', request.paymentReference);
+    if (receiptImage)
+      fd.append('ReceiptImage', receiptImage);
+
+    // متحطش Content-Type يدويًا، المتصفح بيضيفه مع الـ boundary
+    return this.http.post<Order>(this.baseUrl, fd);
   }
 
   getPaymentInfo(): Observable<PaymentInfo> {
     return this.http.get<PaymentInfo>(`${this.baseUrl}/payment-info`);
   }
 
-
+  deleteOrder(id: number): Observable<void> {
+  return this.http.delete<void>(`${this.baseUrl}/${id}`);
+}
 
   getMyOrders(page = 1, pageSize = 20): Observable<Order[]> {
     const params = new HttpParams().set('page', page).set('pageSize', pageSize);
@@ -30,17 +51,9 @@ export class OrderService {
     return this.http.get<Order>(`${this.baseUrl}/${id}`);
   }
 
-  //   getOrders(status: OrderStatus | null, page = 1, pageSize = 20): Observable<AdminOrderListItem[]> {
-  //   let params = new HttpParams().set('page', page).set('pageSize', pageSize);
-  //   if (status) params = params.set('status', status);
-  //   return this.http.get<AdminOrderListItem[]>(this.baseUrl, { params });
-  // }
-
   getOrders(status: OrderStatus | null, page = 1, pageSize = 20): Observable<AdminOrderListItem[]> {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
     if (status) params = params.set('status', status);
-    
-    // التعديل هنا: استخدم adminUrl بدل baseUrl
     return this.http.get<AdminOrderListItem[]>(this.adminUrl, { params });
   }
 
@@ -52,20 +65,16 @@ export class OrderService {
     return this.http.patch<Order>(`${this.adminUrl}/${id}/status`, { status });
   }
 
-downloadInvoice(orderId: number, type: 'customer' | 'admin'): Observable<Blob> {
-  let url = '';
+  downloadInvoice(orderId: number, type: 'customer' | 'admin'): Observable<Blob> {
+    const url = type === 'admin'
+      ? `${this.baseUrl}/${orderId}/admin-invoice`
+      : `${this.baseUrl}/${orderId}/my-invoice`;
 
-  // لو الأدمن هو اللي بيطلب، بنروح للـ Endpoint بتاعة الأدمن اللي بتجيب أي أوردر
-  if (type === 'admin') {
-    url = `${this.baseUrl}/${orderId}/admin-invoice`;
-  } 
-  // لو العميل (أو الأدمن بيطبع فاتورته هو من صفحة طلباتي)، بنروح للـ my-invoice
-  else {
-    url = `${this.baseUrl}/${orderId}/my-invoice`;
+    return this.http.get(url, { responseType: 'blob' });
   }
 
-  return this.http.get(url, {
-    responseType: 'blob'
-  });
-}
+  // <-- جديد: جلب صورة الإيصال للأدمن بالـ token (عن طريق الـ interceptor)
+  getReceipt(orderId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${orderId}/receipt`, { responseType: 'blob' });
+  }
 }

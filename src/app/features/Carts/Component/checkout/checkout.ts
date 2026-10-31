@@ -12,6 +12,10 @@ import { OrderService } from '../../Service/order-service';
 
 const PHONE_REGEX = /^01[0125][0-9]{8}$/;
 
+// <-- جديد: قيود صورة الإيصال (لازم تطابق الباك)
+const RECEIPT_ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const RECEIPT_MAX_SIZE = 5 * 1024 * 1024; // 5 ميجا
+
 /** يحوّل الأرقام العربية والفارسية (٠-٩ / ۰-۹) لأرقام إنجليزية */
 function normalizeDigits(value: string): string {
   return value
@@ -26,13 +30,12 @@ function normalizePhone(value: string): string {
     .replace(/^(?:\+20|0020|20)(?=1)/, '0');
 }
 
-/** required بس بيرفض المسافات الفاضية. بيرجع نفس مفتاح الخطأ 'required' عشان الـ template ميتغيرش. */
+/** required بس بيرفض المسافات الفاضية. */
 const requiredTrimmed: ValidatorFn = (control) =>
   typeof control.value === 'string' && control.value.trim().length > 0
     ? null
     : { required: true };
 
-/** بيرجع نفس مفتاح الخطأ 'pattern' عشان الـ template ميتغيرش. الفاضي بيسيبه لـ requiredTrimmed. */
 const egyptianPhone: ValidatorFn = (control) => {
   const value = normalizePhone(String(control.value ?? ''));
   return value === '' || PHONE_REGEX.test(value) ? null : { pattern: true };
@@ -53,6 +56,11 @@ export class Checkout {
   readonly placedOrder = signal<Order | null>(null);
   readonly paymentInfo = signal<PaymentInfo | null>(null);
 
+  // <-- جديد: حالة صورة الإيصال
+  readonly receiptFile = signal<File | null>(null);
+  readonly receiptPreview = signal<string | null>(null);
+  readonly receiptError = signal<string | null>(null);
+
   readonly methods: PaymentMethod[] = ['CashOnDelivery', 'InstaPay', 'VodafoneCash'];
 
   readonly form = this.fb.nonNullable.group({
@@ -67,19 +75,16 @@ export class Checkout {
   });
 
   constructor() {
-    // بيانات الدفع (رقمك وإنستاباي) من الـ API
     this.orders.getPaymentInfo().subscribe({
       next: (info) => this.paymentInfo.set(info),
       error: () => this.paymentInfo.set(null),
     });
 
-    // رقم العملية إجباري بس مع إنستاباي وفودافون كاش
     this.form.controls.paymentMethod.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.updateReferenceValidator());
   }
 
-  /** هل الطريقة المختارة محتاجة تحويل ورقم عملية؟ */
   requiresReference(): boolean {
     return this.form.controls.paymentMethod.value !== 'CashOnDelivery';
   }
@@ -91,15 +96,55 @@ export class Checkout {
     } else {
       ref.setValidators([Validators.maxLength(100)]);
       ref.setValue('');
+      this.clearReceipt(); // <-- جديد: لو رجع للدفع عند الاستلام امسح الصورة
     }
     ref.updateValueAndValidity();
   }
 
+  // <-- جديد: اختيار الصورة والتحقق منها
+  onReceiptSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    if (!RECEIPT_ALLOWED_TYPES.includes(file.type)) {
+      this.receiptError.set('CHECKOUT.RECEIPT_ERR_TYPE');
+      input.value = '';
+      return;
+    }
+    if (file.size > RECEIPT_MAX_SIZE) {
+      this.receiptError.set('CHECKOUT.RECEIPT_ERR_SIZE');
+      input.value = '';
+      return;
+    }
+
+    this.receiptError.set(null);
+    this.receiptFile.set(file);
+
+    const reader = new FileReader();
+    reader.onload = () => this.receiptPreview.set(reader.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  // <-- جديد: حذف الصورة
+  clearReceipt(input?: HTMLInputElement): void {
+    this.receiptFile.set(null);
+    this.receiptPreview.set(null);
+    this.receiptError.set(null);
+    if (input) input.value = '';
+  }
+
   placeOrder(): void {
-    if (this.submitting()) return; // يمنع الضغط مرتين
+    if (this.submitting()) return;
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      return;
+    }
+
+    // <-- جديد: الصورة إجبارية مع إنستاباي وفودافون كاش
+    if (this.requiresReference() && !this.receiptFile()) {
+      this.receiptError.set('CHECKOUT.RECEIPT_REQUIRED');
       return;
     }
 
@@ -110,18 +155,21 @@ export class Checkout {
     const needsRef = v.paymentMethod !== 'CashOnDelivery';
 
     this.orders
-      .create({
-        shippingAddress: {
-          fullName: v.fullName.trim(),
-          phone: normalizePhone(v.phone),
-          governorate: v.governorate.trim(),
-          city: v.city.trim(),
-          street: v.street.trim(),
-          notes: v.notes.trim() || null,
+      .create(
+        {
+          shippingAddress: {
+            fullName: v.fullName.trim(),
+            phone: normalizePhone(v.phone),
+            governorate: v.governorate.trim(),
+            city: v.city.trim(),
+            street: v.street.trim(),
+            notes: v.notes.trim() || null,
+          },
+          paymentMethod: v.paymentMethod,
+          paymentReference: needsRef ? normalizeDigits(v.paymentReference.trim()) : null,
         },
-        paymentMethod: v.paymentMethod,
-        paymentReference: needsRef ? normalizeDigits(v.paymentReference.trim()) : null,
-      })
+        needsRef ? this.receiptFile() : null, // <-- جديد: الباراميتر التاني
+      )
       .subscribe({
         next: (order) => {
           this.basket.reset();
@@ -143,7 +191,6 @@ export class Checkout {
     return typeof message === 'string' && message ? message : 'CHECKOUT.ERROR_GENERIC';
   }
 
-  /** بيرجع true لو الحقل فيه خطأ واليوزر لمسه */
   hasError(name: keyof typeof this.form.controls, error: string): boolean {
     const c = this.form.controls[name];
     return c.touched && c.hasError(error);
