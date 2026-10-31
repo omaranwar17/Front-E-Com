@@ -35,6 +35,7 @@ export interface Order {
   orderDate: string;
   status: string;
   paymentMethod: string;
+   hasReceipt: boolean;
   paymentReference: string | null;
   shippingAddress: ShippingAddress;
   items: OrderItem[];
@@ -57,6 +58,7 @@ export interface AdminOrderListItem {
   id: number;
   orderDate: string;
   buyerEmail: string;
+   hasReceipt: boolean;
   status: OrderStatus;
   paymentMethod: string;
   paymentReference: string | null;
