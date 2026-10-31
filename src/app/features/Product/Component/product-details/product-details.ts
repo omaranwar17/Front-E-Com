@@ -110,9 +110,7 @@ export class ProductDetails implements OnInit {
     input.value = String(next);
   }
 
-  toggleWishlist(): void {
-    this.wishlisted.update((v) => !v);
-  }
+ 
 
 addToCart(product: any): void {
   // 1. لو المنتج ليه مقاسات والمستخدم مختارش، ننبهه ونوقف العملية

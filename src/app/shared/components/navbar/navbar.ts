@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { BasketService } from '../../../features/Carts/Service/BasketService';
 import { Auth } from '../../../features/Auth/Services/auth';
+import { LayoutService } from '../../Services/layout-service';
 
 @Component({
   imports: [CommonModule, TranslatePipe, RouterLink, RouterLinkActive],
@@ -16,6 +17,7 @@ export class Navbar {
 
 
     isMobileMenuOpen = signal(false);
+    readonly layout = inject(LayoutService);
       isLangMenuOpen = signal(false); 
        isAccountMenuOpen = signal(false); 
         auth = inject(Auth);

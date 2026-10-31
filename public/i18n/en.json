@@ -542,6 +542,12 @@
       "COPIED": "Copied!"
     },
     "WHATSAPP": "Contact us via WhatsApp"
+  },
+   "NOT_FOUND": {
+    "TITLE": "Page Not Found",
+    "MESSAGE": "Sorry, the page you are looking for does not exist or has been moved.",
+    "HOME": "Home",
+    "BACK": "Go Back"
   }
 }
 
