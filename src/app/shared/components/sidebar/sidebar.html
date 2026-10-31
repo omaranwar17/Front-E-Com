@@ -1,0 +1,106 @@
+<!-- Backdrop للموبايل -->
+@if (layout.mobileOpen()) {
+  <div class="fixed inset-0 z-30 bg-black/40 md:hidden"
+       (click)="layout.closeMobile()"></div>
+}
+
+<aside
+  class="fixed inset-y-0 start-0 z-40 flex-col bg-white border-e border-gray-200 shadow-sm
+         transition-[width] duration-300 ease-out"
+  [ngClass]="[
+    layout.mobileOpen() ? 'flex' : 'hidden md:flex',
+    layout.collapsed() ? 'w-64 md:w-20' : 'w-64'
+  ]">
+
+  <!-- الهيدر: لوجو + زرار الفتح/القفل -->
+  <div class="flex h-16 items-center border-b border-gray-200 px-4"
+       [ngClass]="layout.collapsed() ? 'justify-between md:justify-center' : 'justify-between'">
+
+    <a routerLink="/" (click)="layout.closeMobile()"
+       [ngClass]="layout.collapsed() ? 'md:hidden' : ''">
+      <img src="logo-icon.svg" alt="E-Commerce" class="h-10 w-auto object-contain" />
+    </a>
+
+    <!-- ديسكتوب -->
+    <button type="button" (click)="layout.toggle()"
+            aria-label="Toggle sidebar"
+            [attr.aria-expanded]="!layout.collapsed()"
+            class="hidden md:flex h-10 w-10 items-center justify-center rounded-lg text-gray-600
+                   transition-colors hover:bg-gray-100 hover:text-indigo-600
+                   focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40">
+      <i class="fa-solid fa-bars text-lg"></i>
+    </button>
+
+    <!-- موبايل -->
+    <button type="button" (click)="layout.closeMobile()"
+            aria-label="Close sidebar"
+            class="md:hidden flex h-10 w-10 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100">
+      <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+  </div>
+
+  <!-- الروابط -->
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden p-3">
+    <ul class="flex flex-col gap-1">
+           @for (item of items; track item.route) {
+        <li>
+          <a [routerLink]="item.route"
+             routerLinkActive="!bg-indigo-50 !text-indigo-600"
+             ariaCurrentWhenActive="page"
+             (click)="layout.closeMobile()"
+             [attr.title]="layout.collapsed() ? (item.labelKey | translate) : null"
+             class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700
+                    transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
+             [ngClass]="layout.collapsed() ? 'md:justify-center md:px-0' : ''">
+            <i class="fa-solid {{ item.icon }} w-5 shrink-0 text-center text-lg"></i>
+            <span class="truncate" [ngClass]="layout.collapsed() ? 'md:hidden' : ''">
+              {{ item.labelKey | translate }}
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+
+    @if (auth.isAdmin()) {
+      <hr class="my-3 border-gray-200" />
+      <ul class="flex flex-col gap-1">
+        @for (item of adminItems; track item.route) {
+          <li>
+            <a [routerLink]="item.route"
+               routerLinkActive="!bg-indigo-50 !text-indigo-600"
+               ariaCurrentWhenActive="page"
+               (click)="layout.closeMobile()"
+               [attr.title]="layout.collapsed() ? (item.labelKey | translate) : null"
+               class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700
+                      transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
+               [ngClass]="layout.collapsed() ? 'md:justify-center md:px-0' : ''">
+              <i class="fa-solid {{ item.icon }} w-5 shrink-0 text-center text-lg"></i>
+              <span class="truncate" [ngClass]="layout.collapsed() ? 'md:hidden' : ''">
+                {{ item.labelKey | translate }}
+              </span>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </nav>
+
+  <!-- تسجيل الخروج (لو المستخدم مسجل دخول فقط) -->
+  @if (auth.isLoggedIn()) {
+    <div class="border-t border-gray-200 p-3">
+      <button type="button" (click)="logout()"
+              [attr.title]="layout.collapsed() ? ('NAV.Logout' | translate) : null"
+              class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700
+                     transition-colors duration-200 hover:bg-red-50 hover:text-red-600
+                     focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
+              [ngClass]="layout.collapsed() ? 'md:justify-center md:px-0' : ''">
+        <i class="fa-solid fa-arrow-right-from-bracket w-5 shrink-0 text-center text-lg"></i>
+        <span class="truncate" [ngClass]="layout.collapsed() ? 'md:hidden' : ''">
+          {{ 'NAV.Logout' | translate }}
+        </span>
+      </button>
+    </div>
+  }
+</aside>

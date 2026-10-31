@@ -1,18 +1,22 @@
+<app-sidebar></app-sidebar>
 
-<app-navbar></app-navbar>
-<ngx-spinner
-  type="ball-scale-multiple"
-  bdColor="rgba(255, 255, 255, 0.65)"
-  color="#4f46e5"
-  size="medium"
-  [fullScreen]="true">
-</ngx-spinner>
+<div class="min-h-screen transition-[margin] duration-300 ease-out"
+     [ngClass]="layout.collapsed() ? 'md:ms-20' : 'md:ms-64'">
 
-<!-- المكان اللي الصفحات هتتعرض فيه -->
-<router-outlet></router-outlet>
+  <app-navbar></app-navbar>
+
+  <ngx-spinner
+    type="ball-scale-multiple"
+    bdColor="rgba(255, 255, 255, 0.65)"
+    color="#4f46e5"
+    size="medium"
+    [fullScreen]="true">
+  </ngx-spinner>
+
+  <!-- المكان اللي الصفحات هتتعرض فيه -->
+  <router-outlet></router-outlet>
+
   @if (showFooter()) {
     <app-footer></app-footer>
   }
-
-
-
+</div>
